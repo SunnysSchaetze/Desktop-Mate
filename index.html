@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sunny's Schätze – Desktop Mate</title>
+<style>
+:root{
+  --cyan:#4fd8ff; --blue:#102a54; --gold:#ffd34e;
+  --panel:rgba(5,11,28,.94);
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  padding:0;
+  min-height:100%;
+  background:#000 !important;
+  font-family:system-ui,Segoe UI,sans-serif;
+}
+body{
+  color:inherit;
+  overflow:hidden;
+  position:relative;
+  min-height:100svh;
+  width:100%;
+}
+.demo,.demo-card{display:none !important;}
+
+/* Sunny's Schätze Logo oben rechts */
+
+/* Auswahlfeld / Zustandsauswahl */
+.controls{
+  border:2px solid #ff7f00;
+  background:#000;
+  box-shadow:0 0 16px rgba(255,127,0,.22);
+}
+.controls button{
+  border:1px solid #ff7f00;
+  background:#000;
+  color:#ff7f00;
+}
+.controls button:hover{
+  border-color:#ff7f00;
+  background:#333;
+  color:#ffcc80;
+  box-shadow:0 0 10px rgba(255,127,0,.35);
+}
+
+#desktopMate{
+  position:fixed;left:28px;bottom:20px;width:205px;z-index:999999;
+  user-select:none;touch-action:none;cursor:grab;
+  --mx:50%;--my:50%;
+}
+#desktopMate .mate-img{
+  filter:drop-shadow(0 14px 15px rgba(0,0,0,.5));
+}
+#desktopMate.dragging{cursor:grabbing}
+#desktopMate .mate-img{cursor:pointer;}
+#desktopMate.minimized{width:74px}
+#desktopMate.minimized .mate-img{width:74px;height:74px}
+#desktopMate.minimized .speech,
+#desktopMate.minimized .controls,
+#desktopMate.minimized .state-name{display:none}
+
+#desktopMate .speech,
+#desktopMate .state-name{
+  color:#ff7f00;
+}
+
+.mate-wrap{position:relative;width:100%;height:255px}
+.mate-img{
+  display:block;width:205px;height:205px;object-fit:contain;
+  filter:drop-shadow(0 14px 15px rgba(0,0,0,.5));
+  transform-origin:center bottom;
+}
+.state-name{
+  position:absolute;
+  top:-4px;
+  right:-24px;
+  padding:4px 8px;
+  border-radius:10px;
+  background:#000;
+  color:#ff7f00;
+  border:1px solid #ff7f00;
+  font-size:10px;
+  box-shadow:0 0 10px rgba(255,127,0,.25);
+  white-space:nowrap;
+}
+.speech{
+  position:absolute;
+  left:-4px;
+  bottom:250px;
+  min-width:175px;
+  max-width:230px;
+  padding:9px 12px;
+  border-radius:14px;
+  background:#000;
+  color:#ff7f00;
+  border:2px solid #ff7f00;
+  font-size:12px;
+  line-height:1.3;
+  box-shadow:0 0 14px rgba(255,127,0,.35);
+  opacity:0;
+  transform:translateY(8px);
+  transition:.2s;
+  pointer-events:none;
+}
+.speech.show{opacity:1;transform:none}
+.controls{
+  position:fixed;
+  left:50%;
+  bottom:clamp(100px, 13vh, 135px);
+  transform:translateX(-50%);
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:center;
+  gap:5px;
+  width:min(94vw, 760px);
+  padding:7px;
+  border-radius:16px;
+  box-shadow:0 8px 25px rgba(0,0,0,.4);
+  opacity:1;
+  z-index:1000000;
+}
+.controls button{
+  padding:6px 8px;
+  border-radius:8px;
+  font-size:clamp(9px, 1.15vw, 11px);
+  cursor:pointer;
+  white-space:nowrap;
+}
+.controls button:hover{
+  border-color:#ff7f00;
+  background:#333333;
+  box-shadow:0 0 10px rgba(255,127,0,.28);
+}
+.minimize{
+  position:absolute;right:-10px;top:15px;width:25px;height:25px;border:0;
+  border-radius:50%;background:#0a142b;color:white;cursor:pointer;
+  border:1px solid #31577e;z-index:3;
+}
+#desktopMate[data-state="normal"] .mate-img{animation:idle 2.8s ease-in-out infinite}
+#desktopMate[data-state="gehen"] .mate-img{animation:go .55s ease-in-out infinite alternate}
+#desktopMate[data-state="rennen"] .mate-img{animation:run .2s ease-in-out infinite alternate}
+#desktopMate[data-state="springen"] .mate-img{animation:jump .75s ease-in-out infinite}
+#desktopMate[data-state="fliegen"] .mate-img{animation:fly 1s ease-in-out infinite}
+#desktopMate[data-state="sitzen"] .mate-img{animation:sit 2.5s ease-in-out infinite}
+#desktopMate[data-state="schlafen"] .mate-img{animation:sleep 3s ease-in-out infinite}
+#desktopMate[data-state="neugierig"] .mate-img{animation:peek .9s ease-in-out infinite alternate}
+#desktopMate[data-state="maus-interaktion"] .mate-img{animation:mouse 1.1s ease-in-out infinite}
+#desktopMate[data-state="snacken"] .mate-img{animation:snack 1.6s ease-in-out infinite}
+#desktopMate[data-state="traurig"] .mate-img{animation:sad 2s ease-in-out infinite}
+#desktopMate[data-state="ueberrascht"] .mate-img{animation:surprise .6s ease-in-out infinite alternate}
+#desktopMate[data-state="winken"] .mate-img{animation:wave .55s ease-in-out infinite alternate}
+#desktopMate[data-state="feuern"] .mate-img{animation:fire .3s ease-in-out infinite alternate}
+#desktopMate[data-state="zocken"] .mate-img{animation:game .55s ease-in-out infinite alternate}
+
+@keyframes idle{50%{transform:translateY(-4px) rotate(1deg)}}
+@keyframes go{to{transform:translateX(8px) rotate(2deg)}}
+@keyframes run{to{transform:translateX(12px) rotate(4deg)}}
+@keyframes jump{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px) rotate(-2deg)}}
+@keyframes fly{50%{transform:translateY(-13px) rotate(3deg)}}
+@keyframes sit{50%{transform:translateY(2px)}}
+@keyframes sleep{50%{transform:translateY(4px) rotate(-2deg)}}
+@keyframes peek{to{transform:translateX(5px) rotate(2deg)}}
+@keyframes mouse{50%{transform:translateX(5px) scale(1.03)}}
+@keyframes snack{50%{transform:scale(1.04) translateY(-3px)}}
+@keyframes sad{50%{transform:translateY(5px)}}
+@keyframes surprise{to{transform:scale(1.07)}}
+@keyframes wave{to{transform:rotate(5deg) translateY(-4px)}}
+@keyframes fire{to{transform:translateX(6px) scale(1.03)}}
+@keyframes game{0%{transform:translateY(0) rotate(-2deg) scale(1)}50%{transform:translateY(-5px) rotate(2deg) scale(1.03)}100%{transform:translateY(0) rotate(-1deg) scale(1.01)}}
+
+@media(max-width:700px){
+  .site-logo{
+    top:10px;
+    right:10px;
+    width:150px;
+    min-width:0;
+  }
+  #desktopMate{
+    width:clamp(145px, 34vw, 205px);
+    left:clamp(10px, 3vw, 28px);
+    bottom:clamp(82px, 13vh, 125px);
+  }
+  .mate-wrap{height:auto}
+  .mate-img{
+    width:100%;
+    height:auto;
+    max-height:32vh;
+  }
+  .state-name{right:-12px;font-size:9px}
+  .speech{
+    bottom:calc(100% + 12px);
+    left:0;
+    max-width:min(230px,70vw);
+  }
+  .controls{
+    width:min(96vw, 620px);
+    gap:4px;
+    padding:6px;
+    bottom:clamp(100px, 14vh, 130px);
+  }
+  .controls button{
+    padding:5px 6px;
+    font-size:9px;
+  }
+}
+
+
+#stars-canvas,
+#shooting-stars{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:0;
+  pointer-events:none;
+}
+#shooting-stars{z-index:1;}
+#siteLogo,#desktopMateBadge{z-index:999998;}
+#desktopMate{z-index:999999;}
+
+/* Cursor-System aus der Zustandschecklisten-Seite */
+.glitzer{
+  position:fixed; left:0; top:0; pointer-events:none; z-index:1000000;
+  width:var(--size); height:var(--size); opacity:0;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle,#fff 0%,#fffde8 10%,var(--color) 28%,rgba(255,180,0,.60) 45%,transparent 72%);
+  border-radius:50%;
+  filter:drop-shadow(0 0 3px var(--color)) drop-shadow(0 0 7px var(--color)) drop-shadow(0 0 12px rgba(255,150,0,.45));
+  animation:cursorTrail var(--duration) cubic-bezier(.15,.55,.25,1) forwards;
+}
+.glitzer::before,.glitzer::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;}
+.glitzer::before{width:185%;height:14%;background:linear-gradient(to right,transparent,rgba(255,255,255,.10),var(--color),#fff,var(--color),rgba(255,255,255,.10),transparent);border-radius:999px;filter:blur(.3px);}
+.glitzer::after{width:14%;height:185%;background:linear-gradient(to bottom,transparent,rgba(255,255,255,.10),var(--color),#fff,var(--color),rgba(255,255,255,.10),transparent);border-radius:999px;filter:blur(.3px);}
+.glitzer.long{filter:drop-shadow(0 0 4px #fff) drop-shadow(0 0 7px var(--color)) drop-shadow(0 0 13px var(--color)) drop-shadow(0 0 19px rgba(255,145,0,.35));}
+.staub{
+  position:fixed;left:0;top:0;pointer-events:none;z-index:999999;
+  width:var(--staub-size);height:var(--staub-size);border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.72) 0%,var(--color) 28%,rgba(255,170,0,.42) 55%,transparent 100%);
+  transform:translate(-50%,-50%);opacity:0;
+  box-shadow:0 0 4px var(--color),0 0 9px var(--color),0 0 16px rgba(255,150,0,.42),0 0 24px rgba(255,170,0,.18);
+  animation:staubTrail var(--duration) ease-out forwards;
+}
+@keyframes cursorTrail{
+  0%{opacity:0;transform:translate(-50%,-50%) translate(var(--sx),var(--sy)) scale(.18)}
+  10%{opacity:.95;transform:translate(-50%,-50%) translate(var(--sx),var(--sy)) scale(1)}
+  30%{opacity:.85;transform:translate(-50%,-50%) translate(var(--mx),var(--my)) scale(.9)}
+  60%{opacity:.48;transform:translate(-50%,-50%) translate(var(--ex),var(--ey)) scale(.55)}
+  100%{opacity:0;transform:translate(-50%,-50%) translate(var(--ex),var(--ey)) scale(.08)}
+}
+@keyframes staubTrail{
+  0%{opacity:0;transform:translate(-50%,-50%) translate(0,0) scale(.2)}
+  20%{opacity:.8;transform:translate(-50%,-50%) translate(calc(var(--dx)*.25),calc(var(--dy)*.25)) scale(1)}
+  65%{opacity:.55;transform:translate(-50%,-50%) translate(calc(var(--dx)*.65),calc(var(--dy)*.65)) scale(.8)}
+  100%{opacity:0;transform:translate(-50%,-50%) translate(var(--dx),var(--dy)) scale(.2)}
+}
+.klick-flash{
+  position:fixed;left:0;top:0;width:9px;height:9px;border-radius:50%;pointer-events:none;z-index:1000001;
+  background:radial-gradient(circle,#fff 0%,#fff6a0 25%,#ffd000 50%,#ff7800 75%,transparent 100%);
+  box-shadow:0 0 5px #fff000,0 0 12px #ffad00,0 0 22px #ff6500;
+  transform:translate(-50%,-50%) scale(0);
+  animation:flash .42s cubic-bezier(.2,.8,.2,1) forwards;
+}
+@keyframes flash{0%{opacity:0;transform:translate(-50%,-50%) scale(0)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.8)}45%{opacity:.8;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.15)}}
+
+#siteLogo{
+  position:fixed;
+  top:16px;
+  right:16px;
+  width:270px;
+  max-width:25vw;
+  height:auto;
+  z-index:999998;
+  pointer-events:auto;
+  cursor:pointer;
+  transition:transform .28s cubic-bezier(.2,.8,.2,1), filter .28s ease;
+  filter:drop-shadow(0 7px 10px rgba(0,0,0,.55));
+}
+#siteLogo:hover{
+  transform:scale(1.08);
+  filter:drop-shadow(0 0 8px rgba(255,255,255,.9)) drop-shadow(0 0 18px rgba(255,190,70,.85)) drop-shadow(0 7px 14px rgba(0,0,0,.6));
+}
+#desktopMateBadge{
+  position:fixed;
+  top:18px;
+  left:18px;
+  width:300px;
+  max-width:30vw;
+  height:auto;
+  z-index:999998;
+  pointer-events:auto;
+  cursor:pointer;
+  transition:transform .28s cubic-bezier(.2,.8,.2,1), filter .28s ease;
+  filter:drop-shadow(0 7px 10px rgba(0,0,0,.55));
+}
+#desktopMateBadge:hover{
+  transform:scale(1.08);
+  filter:drop-shadow(0 0 8px rgba(255,255,255,.9)) drop-shadow(0 0 18px rgba(255,190,70,.85)) drop-shadow(0 7px 14px rgba(0,0,0,.6));
+}
+@media(max-width:700px){
+  #siteLogo{
+    width:175px;
+    max-width:38vw;
+    top:10px;
+    right:10px;
+  }
+  #desktopMateBadge{
+    width:210px;
+    max-width:48vw;
+    top:10px;
+    left:10px;
+  }
+}
+
+
+#desktopMateBanner{
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  width:min(720px,70vw);
+  height:auto;
+  z-index:999997;
+  pointer-events:auto;
+  cursor:pointer;
+  transition:transform .28s cubic-bezier(.2,.8,.2,1), filter .28s ease;
+  filter:drop-shadow(0 7px 14px rgba(0,0,0,.6));
+}
+#desktopMateBanner:hover{
+  transform:translateX(-50%) scale(1.08);
+  filter:drop-shadow(0 0 8px rgba(255,255,255,.9)) drop-shadow(0 0 18px rgba(255,190,70,.85)) drop-shadow(0 7px 16px rgba(0,0,0,.65));
+}
+@media(max-width:700px){
+  #desktopMateBanner{
+    width:82vw;
+    bottom:10px;
+  }
+}
+
+
+@media(min-width:701px) and (max-width:1100px){
+  #desktopMate{
+    width:185px;
+    left:18px;
+    bottom:clamp(95px, 12vh, 125px);
+  }
+  .mate-img{width:185px;height:auto}
+  .controls{
+    width:min(94vw, 680px);
+    bottom:clamp(104px, 13vh, 135px);
+  }
+}
+@media(max-width:430px){
+  #desktopMate{
+    left:8px;
+    width:145px;
+    bottom:88px;
+  }
+  .mate-img{max-height:28vh}
+  .state-name{display:none}
+  .controls{
+    width:96vw;
+    border-radius:12px;
+    gap:3px;
+    bottom:clamp(94px, 14vh, 112px);
+  }
+  .controls button{
+    padding:4px 5px;
+    font-size:8px;
+  }
+}
+
+/* Gewinnspiel-Style für Auswahlleiste, Sprechblase und Zustandsanzeige */
+.controls{
+  border:2px solid #ff7f00;
+  background:#000;
+  box-shadow:0 0 12px rgba(255,127,0,.45);
+}
+.controls button{
+  border:2px solid #ff7f00;
+  border-radius:10px;
+  color:#ffcc80;
+  background:transparent;
+  font-weight:bold;
+  box-shadow:0 0 12px rgba(255,127,0,.45);
+  transition:.3s ease;
+}
+.controls button:hover{
+  box-shadow:0 0 22px rgba(255,127,0,.9);
+  border-color:#ff9a2f;
+  background:transparent;
+  transform:scale(1.03);
+  color:#ff7f00;
+}
+.state-name{
+  color:#ffcc80;
+  border:2px solid #ff7f00;
+  background:#000;
+  box-shadow:0 0 12px rgba(255,127,0,.45);
+}
+.speech{
+  color:#ffcc80;
+  border:2px solid #ff7f00;
+  background:#000;
+  box-shadow:0 0 12px rgba(255,127,0,.45);
+}
+</style>
+</head>
+<body>
+<canvas id="stars-canvas" aria-hidden="true"></canvas>
+<canvas id="shooting-stars" aria-hidden="true"></canvas>
+
+<img id="siteLogo" src="assets/sunnys-schaetze-logo.png" alt="Sunny's Schätze">
+<img id="desktopMateBadge" src="assets/desktop-mate-badge.png" alt="Desktop Mate – Ein kleiner Drache für deinen Desktop">
+<img id="desktopMateBanner" src="assets/sunnys-desktop-mate-banner.png" alt="Sunny's Schätze – Desktop Mate">
+<main class="demo">
+  <section class="demo-card">
+    <h1>🐉 Sunny's Schätze – Desktop Mate</h1>
+    <p>
+      Dieser Desktop Mate verwendet die <strong>14 Zustände aus deiner Vorlage</strong>
+      als echte Zustandsgrafiken: Normal, Gehen, Rennen, Springen, Fliegen,
+      Sitzen, Schlafen, Neugierig, Maus-Interaktion, Snacken, Traurig,
+      Überrascht, Winken und Feuern.
+    </p>
+    <p>Ziehe den Drachen mit der Maus. Bewege den Mauszeiger über ihn oder klicke ihn an, um Reaktionen auszulösen.</p>
+  </section>
+</main>
+
+<div id="desktopMate" data-state="normal">
+  <div class="mate-wrap">
+    <button class="minimize" id="minimize" title="Minimieren">−</button>
+    <div class="state-name" id="stateName">Normal</div>
+    <div class="speech" id="speech"></div>
+    <img class="mate-img" id="mateImg" draggable="false" src="assets/normal.png" alt="Sunny's Schätze Desktop Mate">
+  </div>
+</div>
+<div class="controls" id="controls" aria-label="Desktop-Mate-Zustände"></div>
+
+<script>
+(() => {
+  const states = [
+    ["normal","Normal","Hallo! Ich bin Sunny the Dragon! 🐉"],
+    ["gehen","Gehen","Ich schaue mich mal um. 👀"],
+    ["rennen","Rennen","Schneller! 🏃💨"],
+    ["springen","Springen","Huiii! ✨"],
+    ["fliegen","Fliegen","Ab in die Lüfte! 🐉💨"],
+    ["sitzen","Sitzen","Eine kleine Pause. 😌"],
+    ["schlafen","Schlafen","Zzz... 😴"],
+    ["neugierig","Neugierig","Was gibt es da zu entdecken? 🤔"],
+    ["maus-interaktion","Maus-Interaktion","Oh! Du bist da! 🖱️❤️"],
+    ["snacken","Snacken","Mmmh... lecker! 🍪"],
+    ["traurig","Traurig","Oh... 🥺"],
+    ["ueberrascht","Überrascht","Wow! 😮"],
+    ["winken","Winken","Huhu! 👋"],
+    ["feuern","Feuern","Feuer frei! 🔥"],
+    ["zocken","Zocken","Noch eine Runde! 🎮😎"]
+  ];
+
+  const mate = document.getElementById("desktopMate");
+  const img = document.getElementById("mateImg");
+  const name = document.getElementById("stateName");
+  const speech = document.getElementById("speech");
+  const controls = document.getElementById("controls");
+  const minimize = document.getElementById("minimize");
+  let speechTimer, idleTimer, dragging=false, movedWhileDragging=false, pressedOnImage=false, ox=0, oy=0;
+
+  states.forEach(([key,label])=>{
+    const b=document.createElement("button");
+    b.textContent=label;
+    b.title=label;
+    b.onclick=()=>setState(key,true);
+    controls.appendChild(b);
+  });
+
+  function setState(key, say=true){
+    const s=states.find(x=>x[0]===key) || states[0];
+    mate.dataset.state=s[0];
+    name.textContent=s[1];
+    img.src=`assets/${s[0]}.png`;
+    if(say){
+      speech.textContent=s[2];
+      speech.classList.add("show");
+      clearTimeout(speechTimer);
+      speechTimer=setTimeout(()=>speech.classList.remove("show"),2600);
+    }
+  }
+
+  function randomIdle(){
+    if(dragging || mate.classList.contains("minimized")) return;
+    const pool=["normal","gehen","sitzen","neugierig","winken","snacken","schlafen","zocken"];
+    const key=pool[Math.floor(Math.random()*pool.length)];
+    setState(key,false);
+    clearTimeout(idleTimer);
+    idleTimer=setTimeout(()=>setState("normal",false),2600);
+  }
+  setInterval(randomIdle,7000);
+
+  const clickReactions = [
+    ["normal","Da bist du ja! 🐉✨"],
+    ["gehen","Ich gehe mal los! 👣"],
+    ["rennen","Los geht's! 🏃💨"],
+    ["springen","Huiii! 🐉✨"],
+    ["fliegen","Ich fliege eine Runde! 🪽"],
+    ["sitzen","Ich setze mich kurz hin. 😌"],
+    ["schlafen","Psst... ich bin müde. 😴"],
+    ["neugierig","Was war das? 👀❓"],
+    ["maus-interaktion","Oh! Du hast mich erwischt! 🖱️❤️"],
+    ["snacken","Zeit für einen Snack! 🍪"],
+    ["traurig","Oh... 🥺"],
+    ["ueberrascht","Whoa! 😮✨"],
+    ["winken","Huhu! 👋🐉"],
+    ["feuern","Feuer frei! 🔥"],
+    ["zocken","Zeit zum Zocken! 🎮🔥"]
+  ];
+
+
+
+  mate.addEventListener("mousemove",e=>{
+    const r=mate.getBoundingClientRect();
+    mate.style.setProperty("--mx",(e.clientX-r.left)+"px");
+    mate.style.setProperty("--my",(e.clientY-r.top)+"px");
+  });
+
+  mate.addEventListener("mouseenter",()=>{
+    if(!dragging && mate.dataset.state==="normal"){
+      speech.textContent="Oh! Besuch! ❤️";
+      speech.style.color="#ff7f00";
+      speech.classList.add("show");
+    }
+  });
+  mate.addEventListener("mouseleave",()=>{
+    clearTimeout(speechTimer);
+    speechTimer=setTimeout(()=>speech.classList.remove("show"),700);
+  });
+
+  mate.addEventListener("pointerdown",e=>{
+    if(e.target.closest("button")) return;
+
+    // Merken, ob der Druck direkt auf dem Drachenbild begonnen hat.
+    pressedOnImage = !!e.target.closest(".mate-img");
+
+    dragging=true;
+    movedWhileDragging=false;
+    mate.classList.add("dragging");
+
+    const r=mate.getBoundingClientRect();
+    ox=e.clientX-r.left;
+    oy=e.clientY-r.top;
+
+    mate.setPointerCapture(e.pointerId);
+  });
+  mate.addEventListener("pointermove",e=>{
+    if(!dragging) return;
+    if(Math.abs(e.movementX)+Math.abs(e.movementY) > 1) movedWhileDragging=true;
+    mate.style.left=(e.clientX-ox)+"px";
+    mate.style.top=(e.clientY-oy)+"px";
+    mate.style.bottom="auto";
+  });
+  mate.addEventListener("pointerup",e=>{
+    const wasClick = !movedWhileDragging;
+    const clickedImage = pressedOnImage;
+
+    dragging=false;
+    mate.classList.remove("dragging");
+
+    // Beim einfachen Klick auf den Drachen zufällig ein Emote
+    // aus der gleichen Liste wie die Buttons ausführen.
+    if(wasClick && clickedImage && !mate.classList.contains("minimized")){
+      const selectable = states.filter(([key]) => key !== mate.dataset.state);
+      const [key] = selectable[Math.floor(Math.random() * selectable.length)];
+      setState(key, true);
+    }
+
+    pressedOnImage=false;
+  });
+
+  mate.addEventListener("pointercancel",()=>{
+    dragging=false;
+    movedWhileDragging=true;
+    pressedOnImage=false;
+    mate.classList.remove("dragging");
+  });
+
+  minimize.onclick=()=>{
+    mate.classList.toggle("minimized");
+    minimize.textContent=mate.classList.contains("minimized")?"+":"−";
+  };
+
+  setState("normal",false);
+
+
+  const bottomBanner = document.getElementById("desktopMateBanner");
+  function positionControlsAboveBanner(){
+    if(!bottomBanner || !controls) return;
+
+    // Die Liste endet mit einem festen kleinen Abstand genau oberhalb
+    // des unteren PNGs. Dadurch wird das PNG niemals von der Liste überdeckt.
+    const rect = bottomBanner.getBoundingClientRect();
+    const gap = 10;
+
+    controls.style.top = "auto";
+    controls.style.bottom = Math.max(18, Math.round(window.innerHeight - rect.top + gap)) + "px";
+  }
+
+  positionControlsAboveBanner();
+  window.addEventListener("resize", positionControlsAboveBanner);
+  window.addEventListener("orientationchange", ()=>setTimeout(positionControlsAboveBanner,150));
+  if(bottomBanner){
+    bottomBanner.addEventListener("mouseenter", ()=>setTimeout(positionControlsAboveBanner,20));
+    bottomBanner.addEventListener("mouseleave", ()=>setTimeout(positionControlsAboveBanner,20));
+  }
+
+  // =========================================================
+  // ANIMIERTER STERNE-HINTERGRUND + STERNSCHNUPPEN
+  // =========================================================
+  const starCanvas = document.getElementById("stars-canvas");
+  const starCtx = starCanvas.getContext("2d");
+  let stars = [];
+
+  function getStarCount(){
+    const w=window.innerWidth;
+    if(w<600) return 10+Math.floor(Math.random()*6);
+    if(w<1200) return 20+Math.floor(Math.random()*11);
+    return 40+Math.floor(Math.random()*11);
+  }
+  function createStars(){
+    stars=[];
+    for(let i=0;i<getStarCount();i++){
+      stars.push({x:Math.random()*starCanvas.width,y:Math.random()*starCanvas.height,size:Math.random()*3+2,hue:Math.random()*360,phase:Math.random()*Math.PI*2,hueSpeed:.5+Math.random()*1.5});
+    }
+  }
+  function resizeStarCanvas(){starCanvas.width=window.innerWidth;starCanvas.height=window.innerHeight;createStars();}
+  resizeStarCanvas();
+  window.addEventListener("resize",resizeStarCanvas);
+  function drawStars(){
+    starCtx.clearRect(0,0,starCanvas.width,starCanvas.height);
+    stars.forEach(s=>{
+      s.hue+=s.hueSpeed*.1;if(s.hue>360)s.hue-=360;
+      const alpha=.65+Math.sin(s.phase+performance.now()/500)*.35;
+      const color=`hsla(${s.hue},100%,70%,${alpha})`;
+      starCtx.shadowBlur=10;starCtx.shadowColor=color;starCtx.fillStyle=color;
+      starCtx.beginPath();
+      let rot=Math.PI/2*3,spikes=5,outer=s.size,inner=s.size/2;
+      starCtx.moveTo(s.x,s.y-outer);
+      for(let j=0;j<spikes;j++){
+        starCtx.lineTo(s.x+Math.cos(rot)*outer,s.y+Math.sin(rot)*outer);rot+=Math.PI/spikes;
+        starCtx.lineTo(s.x+Math.cos(rot)*inner,s.y+Math.sin(rot)*inner);rot+=Math.PI/spikes;
+      }
+      starCtx.closePath();starCtx.fill();s.phase+=.02;
+    });
+    requestAnimationFrame(drawStars);
+  }
+  drawStars();
+
+  const shootCanvas=document.getElementById("shooting-stars");
+  const shootCtx=shootCanvas.getContext("2d");
+  function resizeShootCanvas(){shootCanvas.width=window.innerWidth;shootCanvas.height=window.innerHeight;}
+  resizeShootCanvas();window.addEventListener("resize",resizeShootCanvas);
+  class ShootingStar{
+    constructor(){this.reset();}
+    reset(){
+      this.x=Math.random()*shootCanvas.width;this.y=Math.random()*-shootCanvas.height;
+      this.len=80+Math.random()*100;this.speed=.3+Math.random()*.7;
+      this.angle=Math.random()*Math.PI/3+Math.PI/6;
+      const hue=Math.random()*360;this.hue=hue;this.color=`hsl(${hue},100%,70%)`;
+      this.hueSpeed=.5+Math.random();this.endWidth=6+Math.random()*4;this.size=4+Math.random()*2;
+    }
+    update(){
+      this.x-=Math.cos(this.angle)*this.speed;this.y+=Math.sin(this.angle)*this.speed;
+      this.hue=(this.hue+this.hueSpeed)%360;this.color=`hsl(${this.hue},100%,70%)`;
+      if(this.x<-this.len||this.y>shootCanvas.height+this.len)this.reset();
+    }
+    drawStar(ctx,cx,cy,spikes,outer,inner){
+      let rot=Math.PI/2*3,step=Math.PI/spikes;ctx.beginPath();ctx.moveTo(cx,cy-outer);
+      for(let i=0;i<spikes;i++){ctx.lineTo(cx+Math.cos(rot)*outer,cy+Math.sin(rot)*outer);rot+=step;ctx.lineTo(cx+Math.cos(rot)*inner,cy+Math.sin(rot)*inner);rot+=step;}
+      ctx.closePath();ctx.fillStyle=this.color;ctx.shadowBlur=12;ctx.shadowColor=this.color;ctx.fill();
+    }
+    draw(){
+      const endX=this.x,endY=this.y,startX=endX+Math.cos(this.angle)*this.len,startY=endY-Math.sin(this.angle)*this.len;
+      shootCtx.beginPath();shootCtx.moveTo(startX,startY);shootCtx.lineTo(endX+this.endWidth/2,endY);shootCtx.lineTo(endX-this.endWidth/2,endY);shootCtx.closePath();
+      const grad=shootCtx.createLinearGradient(startX,startY,endX,endY);grad.addColorStop(0,this.color);grad.addColorStop(1,'rgba(0,0,0,0)');
+      shootCtx.fillStyle=grad;shootCtx.shadowBlur=10;shootCtx.shadowColor=this.color;shootCtx.fill();
+      this.drawStar(shootCtx,endX,endY,5,this.size,this.size/2);
+    }
+  }
+  function getShootingStarCount(){const w=window.innerWidth;if(w<600)return 2;if(w<1200)return 4;return 6;}
+  let shootingStars=[];
+  function createShootingStars(){shootingStars=[];for(let i=0;i<getShootingStarCount();i++)shootingStars.push(new ShootingStar());}
+  createShootingStars();window.addEventListener("resize",createShootingStars);
+  function animateShootingStars(){shootCtx.clearRect(0,0,shootCanvas.width,shootCanvas.height);shootingStars.forEach(s=>{s.update();s.draw();});requestAnimationFrame(animateShootingStars);}
+  animateShootingStars();
+
+  // =========================================================
+  // MAUSZEIGER-ANIMATION AUS DER REFERENZ
+  // =========================================================
+  let letzteX=0,letzteY=0,letzterSpawn=0,aktiveGlitzer=0;
+  const MAX_GLITZER=180;
+  document.addEventListener("mousemove",e=>erzeugeBewegungsEffekt(e.clientX,e.clientY));
+  document.addEventListener("touchmove",e=>{
+    if(!e.touches||!e.touches.length)return;
+    erzeugeBewegungsEffekt(e.touches[0].clientX,e.touches[0].clientY);
+  },{passive:true});
+  document.addEventListener("click",e=>klickEffekt(e.clientX,e.clientY));
+  function erzeugeBewegungsEffekt(x,y){
+    const dx=x-letzteX,dy=y-letzteY,entfernung=Math.sqrt(dx*dx+dy*dy),jetzt=performance.now();
+    if(entfernung<2)return;
+    if(jetzt-letzterSpawn<12){letzteX=x;letzteY=y;return;}
+    if(aktiveGlitzer>=MAX_GLITZER){letzteX=x;letzteY=y;return;}
+    const nx=dx/entfernung,ny=dy/entfernung;
+    createGlitzer(x,y,false,nx,ny);
+    createStaub(x,y);createStaub(x,y);createStaub(x-nx*6,y-ny*6);createStaub(x-nx*12,y-ny*12);createStaub(x-nx*25,y-ny*25);createStaub(x-nx*40,y-ny*40);
+    if(Math.random()>.68)createGlitzer(x,y,true,nx,ny);
+    if(entfernung>15){createStaub(x,y);createStaub(x-nx*15,y-ny*15);createStaub(x-nx*30,y-ny*30);if(entfernung>28){createStaub(x-nx*45,y-ny*45);createStaub(x-nx*60,y-ny*60);}}
+    letzterSpawn=jetzt;letzteX=x;letzteY=y;
+  }
+  function createGlitzer(x,y,grosser=false,nx=0,ny=0){
+    if(aktiveGlitzer>=MAX_GLITZER)return;
+    const el=document.createElement("div");el.className=grosser?"glitzer long":"glitzer";
+    const color=Math.random()>.5?"#ff8500":"#ffe000",size=grosser?10+Math.random()*5:4+Math.random()*4;
+    el.style.setProperty("--color",color);el.style.setProperty("--size",size+"px");
+    const seitlich=(Math.random()-.5)*5,px=-ny,py=nx,sx=px*seitlich,sy=py*seitlich;
+    const mx=sx-nx*(16+Math.random()*16),my=sy-ny*(16+Math.random()*16),ex=mx-nx*(32+Math.random()*35)+(Math.random()-.5)*5,ey=my-ny*(32+Math.random()*35)+(Math.random()-.5)*5;
+    el.style.setProperty("--sx",sx+"px");el.style.setProperty("--sy",sy+"px");el.style.setProperty("--mx",mx+"px");el.style.setProperty("--my",my+"px");el.style.setProperty("--ex",ex+"px");el.style.setProperty("--ey",ey+"px");
+    const duration=900+Math.random()*550;el.style.setProperty("--duration",duration+"ms");el.style.left=x+"px";el.style.top=y+"px";
+    aktiveGlitzer++;document.body.appendChild(el);setTimeout(()=>{el.remove();aktiveGlitzer--;},duration+60);
+  }
+  function createStaub(x,y){
+    if(aktiveGlitzer>=MAX_GLITZER)return;
+    const el=document.createElement("div");el.className="staub";const color=Math.random()>.5?"#ff8500":"#ffe000";el.style.setProperty("--color",color);
+    el.style.setProperty("--staub-size",1.5+Math.random()*2.5+"px");
+    el.style.left=(x+(Math.random()-.5)*20)+"px";el.style.top=(y+(Math.random()-.5)*20)+"px";
+    el.style.setProperty("--dx",(Math.random()-.5)*48+"px");el.style.setProperty("--dy",(Math.random()-.5)*48+"px");
+    const duration=650+Math.random()*550;el.style.setProperty("--duration",duration+"ms");aktiveGlitzer++;document.body.appendChild(el);setTimeout(()=>{el.remove();aktiveGlitzer--;},duration+60);
+  }
+  function klickEffekt(x,y){
+    const flash=document.createElement("div");flash.className="klick-flash";flash.style.left=x+"px";flash.style.top=y+"px";document.body.appendChild(flash);
+    for(let i=0;i<18;i++){createExplosionsGlitzer(x,y,Math.random()>.65);createExplosionStaub(x,y);}
+    setTimeout(()=>flash.remove(),500);
+  }
+  function createExplosionsGlitzer(x,y,grosser=false){
+    if(aktiveGlitzer>=MAX_GLITZER)return;
+    const el=document.createElement("div");el.className=grosser?"glitzer long":"glitzer";const color=Math.random()>.5?"#ff8500":"#ffe000";const size=grosser?13+Math.random()*8:7+Math.random()*7;
+    el.style.setProperty("--color",color);el.style.setProperty("--size",size+"px");
+    const winkel=Math.random()*Math.PI*2,distance=grosser?55+Math.random()*55:35+Math.random()*70;
+    el.style.setProperty("--sx",(Math.random()-.5)*6+"px");el.style.setProperty("--sy",(Math.random()-.5)*6+"px");el.style.setProperty("--mx",Math.cos(winkel)*distance*.45+"px");el.style.setProperty("--my",Math.sin(winkel)*distance*.45+"px");el.style.setProperty("--ex",Math.cos(winkel)*distance+"px");el.style.setProperty("--ey",Math.sin(winkel)*distance+"px");
+    const duration=500+Math.random()*350;el.style.setProperty("--duration",duration+"ms");el.style.left=x+"px";el.style.top=y+"px";aktiveGlitzer++;document.body.appendChild(el);setTimeout(()=>{el.remove();aktiveGlitzer--;},duration+60);
+  }
+  function createExplosionStaub(x,y){
+    if(aktiveGlitzer>=MAX_GLITZER)return;
+    const el=document.createElement("div");el.className="staub";const color=Math.random()>.5?"#ff8500":"#ffe000";el.style.setProperty("--color",color);el.style.setProperty("--staub-size",3+Math.random()*4+"px");
+    const winkel=Math.random()*Math.PI*2,distance=35+Math.random()*75;el.style.left=x+"px";el.style.top=y+"px";el.style.setProperty("--dx",Math.cos(winkel)*distance+"px");el.style.setProperty("--dy",Math.sin(winkel)*distance+"px");
+    const duration=450+Math.random()*400;el.style.setProperty("--duration",duration+"ms");aktiveGlitzer++;document.body.appendChild(el);setTimeout(()=>{el.remove();aktiveGlitzer--;},duration+60);
+  }
+})();
+</script>
+</body>
+</html>
