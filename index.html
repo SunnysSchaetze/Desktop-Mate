@@ -592,17 +592,41 @@ body{
 
   setState("normal",false);
 
-  // Beim Start steht der Drache genau in der Mitte des Containers/Fensters.
-  // Sobald der Nutzer ihn zieht, kann er weiterhin frei positioniert werden.
+  // Beim Start steht der Drache mittig im sichtbaren Bereich.
+  // Wichtig für Google Sites/kleine Bildschirme: Die Position wird nach dem
+  // Layout berechnet und innerhalb des sichtbaren Bereichs begrenzt.
   function centerMateAtStart(){
     if(mate.classList.contains("minimized")) return;
+
     const rect = mate.getBoundingClientRect();
-    mate.style.left = Math.max(0, (window.innerWidth - rect.width) / 2) + "px";
-    mate.style.top = Math.max(0, (window.innerHeight - rect.height) / 2) + "px";
+    const margin = 8;
+
+    const maxLeft = Math.max(margin, window.innerWidth - rect.width - margin);
+    const maxTop = Math.max(margin, window.innerHeight - rect.height - margin);
+
+    const left = Math.min(
+      maxLeft,
+      Math.max(margin, (window.innerWidth - rect.width) / 2)
+    );
+
+    const top = Math.min(
+      maxTop,
+      Math.max(margin, (window.innerHeight - rect.height) / 2)
+    );
+
+    mate.style.left = Math.round(left) + "px";
+    mate.style.top = Math.round(top) + "px";
     mate.style.right = "auto";
     mate.style.bottom = "auto";
   }
-  centerMateAtStart();
+
+  // Erst nach dem ersten Layout zentrieren, damit Google Sites die
+  // tatsächliche Größe des eingebetteten Containers berücksichtigt.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(centerMateAtStart);
+  });
+
+  window.addEventListener("resize", centerMateAtStart);
 
   const bottomBanner = document.getElementById("desktopMateBanner");
   function positionControlsAboveBanner(){
