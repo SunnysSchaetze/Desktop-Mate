@@ -173,6 +173,11 @@ body{
 @keyframes game{0%{transform:translateY(0) rotate(-2deg) scale(1)}50%{transform:translateY(-5px) rotate(2deg) scale(1.03)}100%{transform:translateY(0) rotate(-1deg) scale(1.01)}}
 
 @media(max-width:700px){
+  #uiCollapse{
+    top:8px;
+    padding:5px 9px;
+    font-size:10px;
+  }
   .site-logo{
     top:10px;
     right:10px;
@@ -222,6 +227,41 @@ body{
 #shooting-stars{z-index:1;}
 #siteLogo,#desktopMateBadge{z-index:999998;}
 #desktopMate{z-index:999999;}
+
+/* Alles außer dem Drachen ein-/ausklappen */
+#uiCollapse{
+  position:fixed;
+  left:50%;
+  top:12px;
+  transform:translateX(-50%);
+  z-index:1000002;
+  border:2px solid #ff7f00;
+  border-radius:10px;
+  padding:6px 12px;
+  background:#000;
+  color:#ffcc80;
+  font-weight:bold;
+  font-size:11px;
+  cursor:pointer;
+  box-shadow:0 0 12px rgba(255,127,0,.45);
+}
+#uiCollapse{
+  transition:.3s ease;
+}
+#uiCollapse:hover{
+  box-shadow:0 0 22px rgba(255,127,0,.9);
+  border-color:#ff9a2f;
+  background:transparent;
+  transform:translateX(-50%) scale(1.03);
+  color:#ff7f00;
+}
+body.ui-collapsed #siteLogo,
+body.ui-collapsed #desktopMateBadge,
+body.ui-collapsed #desktopMateBanner,
+body.ui-collapsed #controls,
+body.ui-collapsed .demo{
+  display:none !important;
+}
 
 /* Cursor-System aus der Zustandschecklisten-Seite */
 .glitzer{
@@ -417,6 +457,7 @@ body{
 <img id="siteLogo" src="assets/sunnys-schaetze-logo.png" alt="Sunny's Schätze">
 <img id="desktopMateBadge" src="assets/desktop-mate-badge.png" alt="Desktop Mate – Ein kleiner Drache für deinen Desktop">
 <img id="desktopMateBanner" src="assets/sunnys-desktop-mate-banner.png" alt="Sunny's Schätze – Desktop Mate">
+<button id="uiCollapse" type="button" aria-expanded="true" aria-label="Alle Elemente außer dem Drachen einklappen">− Elemente einklappen</button>
 <main class="demo">
   <section class="demo-card">
     <h1>🐉 Sunny's Schätze – Desktop Mate</h1>
@@ -466,7 +507,21 @@ body{
   const speech = document.getElementById("speech");
   const controls = document.getElementById("controls");
   const minimize = document.getElementById("minimize");
+  const uiCollapse = document.getElementById("uiCollapse");
   let speechTimer, idleTimer, dragging=false, movedWhileDragging=false, pressedOnImage=false, ox=0, oy=0;
+
+  // Alle Seitenelemente außer dem Drachen ein-/ausklappen.
+  uiCollapse.addEventListener("click",()=>{
+    const collapsed = document.body.classList.toggle("ui-collapsed");
+    uiCollapse.setAttribute("aria-expanded", String(!collapsed));
+    uiCollapse.textContent = collapsed ? "+ Alles anzeigen" : "− Nur Sunny the Dragon Anzeigen";
+    uiCollapse.setAttribute(
+      "aria-label",
+      collapsed
+        ? "Alle ausgeblendeten Elemente anzeigen"
+        : "Alle Elemente außer dem Drachen einklappen"
+    );
+  });
 
   states.forEach(([key,label])=>{
     const b=document.createElement("button");
