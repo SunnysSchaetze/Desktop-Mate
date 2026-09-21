@@ -592,15 +592,15 @@ body{
 
   setState("normal",false);
 
-  // Beim Start steht der Drache immer horizontal mittig.
+  // Beim Start steht der Drache genau in der Mitte des Containers/Fensters.
   // Sobald der Nutzer ihn zieht, kann er weiterhin frei positioniert werden.
   function centerMateAtStart(){
     if(mate.classList.contains("minimized")) return;
-    const width = mate.getBoundingClientRect().width;
-    mate.style.left = Math.max(0, (window.innerWidth - width) / 2) + "px";
+    const rect = mate.getBoundingClientRect();
+    mate.style.left = Math.max(0, (window.innerWidth - rect.width) / 2) + "px";
+    mate.style.top = Math.max(0, (window.innerHeight - rect.height) / 2) + "px";
     mate.style.right = "auto";
-    mate.style.top = "auto";
-    mate.style.bottom = "20px";
+    mate.style.bottom = "auto";
   }
   centerMateAtStart();
 
