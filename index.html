@@ -450,14 +450,43 @@ body.ui-collapsed .demo{
   }
 }
 
-/* Sehr kleine Smartphones */
+/* Smartphone: kompakte, vollständig sichtbare und scrollbar Zustandsleiste */
+@media(max-width:700px){
+  .controls{
+    left:4px !important;
+    top:50% !important;
+    bottom:auto !important;
+    transform:translateY(-50%) !important;
+    width:clamp(82px, 24vw, 112px);
+    max-width:none;
+    max-height:46svh;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding:4px;
+    gap:2px;
+    border-radius:10px;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+  }
+  .controls button{
+    width:100%;
+    min-width:0;
+    flex:0 0 auto;
+    padding:3px 4px;
+    border-radius:7px;
+    font-size:clamp(7px, 2vw, 8px);
+    line-height:1.05;
+    white-space:nowrap;
+  }
+}
+
 @media(max-width:360px){
   .controls{
-    max-width:clamp(82px, 27vw, 108px);
+    width:82px;
+    max-height:44svh;
     padding:3px;
     gap:2px;
   }
-
   .controls button{
     padding:2px 3px;
     font-size:7px;
@@ -796,11 +825,12 @@ body.ui-collapsed .demo{
   const bottomBanner = document.getElementById("desktopMateBanner");
   function positionControlsAboveBanner(){
     if(!controls) return;
-    // Die Zustandsauswahl bleibt dauerhaft links und untereinander.
-    controls.style.left = window.innerWidth <= 430 ? "6px" : "12px";
-    controls.style.top = "50%";
-    controls.style.bottom = "auto";
-    controls.style.transform = "translateY(-50%)";
+    // Keine Inline-Position setzen: Die responsive CSS-Regel soll auf
+    // Smartphones die Größe und Position bestimmen.
+    controls.style.left = "";
+    controls.style.top = "";
+    controls.style.bottom = "";
+    controls.style.transform = "";
   }
 
 
