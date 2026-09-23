@@ -177,7 +177,6 @@ body{
 
 @media(max-width:700px){
   #uiCollapse{
-    top:8px;
     padding:5px 9px;
     font-size:10px;
   }
@@ -236,10 +235,7 @@ body{
 
 /* Alles außer dem Drachen ein-/ausklappen */
 #uiCollapse{
-  position:fixed;
-  left:50%;
-  top:12px;
-  transform:translateX(-50%);
+  position:static;
   z-index:1000002;
   border:2px solid #ff7f00;
   border-radius:10px;
@@ -258,7 +254,7 @@ body{
   box-shadow:0 0 22px rgba(255,127,0,.9);
   border-color:#ff9a2f;
   background:transparent;
-  transform:translateX(-50%) scale(1.03);
+  transform:scale(1.03);
   color:#ff7f00;
 }
 body.ui-collapsed #siteLogo,
@@ -635,12 +631,23 @@ body.ui-collapsed .demo{
   transform:none !important;
   margin:0;
 }
-#bannerStateName{
+#bannerTop{
   position:absolute;
   left:50%;
   bottom:100%;
   transform:translateX(-50%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
   margin-bottom:4px;
+  z-index:3;
+  max-width:calc(100vw - 12px);
+}
+#bannerStateName{
+  position:static;
+  transform:none;
+  margin:0;
   padding:4px 8px;
   border-radius:10px;
   color:#ffcc80;
@@ -657,6 +664,10 @@ body.ui-collapsed .demo{
   transform:scale(1.08) !important;
 }
 @media(max-width:700px){
+  #bannerTop{
+    gap:4px;
+    margin-bottom:3px;
+  }
   #bannerWrap{
     width:82vw;
     bottom:10px;
@@ -676,10 +687,12 @@ body.ui-collapsed .demo{
 <img id="siteLogo" src="assets/sunnys-schaetze-logo.png" alt="Sunny's Schätze">
 <img id="desktopMateBadge" src="assets/desktop-mate-badge.png" alt="Desktop Mate – Ein kleiner Drache für deinen Desktop">
 <div id="bannerWrap">
-  <div id="bannerStateName" aria-live="polite">Normal</div>
+  <div id="bannerTop">
+    <div id="bannerStateName" aria-live="polite">Normal</div>
+    <button id="uiCollapse" type="button" aria-expanded="true" aria-label="-  Nur Sunny the Dragon Anzeigen">-  Nur Sunny the Dragon Anzeigen</button>
+  </div>
   <img id="desktopMateBanner" src="assets/sunnys-desktop-mate-banner.png" alt="Sunny's Schätze – Desktop Mate">
 </div>
-<button id="uiCollapse" type="button" aria-expanded="true" aria-label="Nur Sunny the Dragon Anzeigen">Nur Sunny the Dragon Anzeigen</button>
 <main class="demo">
   <section class="demo-card">
     <h1>🐉 Sunny's Schätze – Desktop Mate</h1>
@@ -733,12 +746,12 @@ body.ui-collapsed .demo{
   uiCollapse.addEventListener("click",()=>{
     const collapsed = document.body.classList.toggle("ui-collapsed");
     uiCollapse.setAttribute("aria-expanded", String(!collapsed));
-    uiCollapse.textContent = collapsed ? "+ Alles anzeigen" : "Nur Sunny the Dragon Anzeigen";
+    uiCollapse.textContent = collapsed ? "+ Alles anzeigen" : "-  Nur Sunny the Dragon Anzeigen";
     uiCollapse.setAttribute(
       "aria-label",
       collapsed
         ? "Alle ausgeblendeten Elemente anzeigen"
-        : "Nur Sunny the Dragon Anzeigen"
+        : "-  Nur Sunny the Dragon Anzeigen"
     );
   });
 
