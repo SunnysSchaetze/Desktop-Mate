@@ -56,6 +56,12 @@ body{
 }
 #desktopMate.dragging{cursor:grabbing}
 #desktopMate .mate-img{cursor:pointer;}
+#desktopMate.minimized{width:74px}
+#desktopMate.minimized .mate-img{width:74px;height:74px}
+#desktopMate.minimized .speech,
+#desktopMate.minimized .controls,
+#desktopMate.minimized .state-name{display:none}
+
 #desktopMate .speech,
 #desktopMate .state-name{
   color:#ff7f00;
@@ -132,6 +138,11 @@ body{
   background:#333333;
   box-shadow:0 0 10px rgba(255,127,0,.28);
 }
+.minimize{
+  position:absolute;right:-10px;top:15px;width:25px;height:25px;border:0;
+  border-radius:50%;background:#0a142b;color:white;cursor:pointer;
+  border:1px solid #31577e;z-index:3;
+}
 #desktopMate[data-state="normal"] .mate-img{animation:idle 2.8s ease-in-out infinite}
 #desktopMate[data-state="gehen"] .mate-img{animation:go .55s ease-in-out infinite alternate}
 #desktopMate[data-state="rennen"] .mate-img{animation:run .2s ease-in-out infinite alternate}
@@ -187,7 +198,6 @@ body{
     height:auto;
     max-height:32vh;
   }
-  .state-name{right:-12px;font-size:9px}
   .speech{
     bottom:calc(100% + 12px);
     left:0;
@@ -253,7 +263,7 @@ body{
 }
 body.ui-collapsed #siteLogo,
 body.ui-collapsed #desktopMateBadge,
-body.ui-collapsed #desktopMateBanner,
+body.ui-collapsed #bannerWrap,
 body.ui-collapsed #controls,
 body.ui-collapsed .demo{
   display:none !important;
@@ -401,7 +411,6 @@ body.ui-collapsed .demo{
     bottom:88px;
   }
   .mate-img{max-height:28vh}
-  .state-name{display:none}
   .controls{
     left:6px;
     top:50%;
@@ -505,8 +514,28 @@ body.ui-collapsed .demo{
 }
 
 
-/* Die Scroll-/Positionierungsregeln für Smartphones stehen gesammelt
-   im abschließenden MOBILE FIX weiter unten. */
+/* Smartphone: Zustandsliste ist vollständig scrollbar */
+@media(max-width:700px){
+  .controls{
+    max-height:calc(100svh - 24px);
+    overflow-y:auto;
+    overflow-x:hidden;
+    justify-content:flex-start;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    touch-action:pan-y;
+    scrollbar-width:thin;
+  }
+  .controls button{
+    flex:0 0 auto;
+  }
+}
+
+@media(max-width:430px){
+  .controls{
+    max-height:calc(100svh - 20px);
+  }
+}
 
 /* Gewinnspiel-Style für Auswahlleiste, Sprechblase und Zustandsanzeige */
 .controls{
@@ -544,101 +573,100 @@ body.ui-collapsed .demo{
 }
 
 
-/* MOBILE FIX: Zustandsliste im Google-Sites-Container vollständig scrollbar */
-@media(max-width:700px){
-  .controls{
-    position:fixed !important;
-    left:4px !important;
-    right:auto !important;
-    top:10px !important;
-    bottom:10px !important;
-
-    transform:none !important;
-
-    width:clamp(82px,24vw,112px) !important;
-    max-width:none !important;
-
-    height:auto !important;
-    max-height:none !important;
-
-    display:flex !important;
-    flex-direction:column !important;
-    justify-content:flex-start !important;
-    align-items:stretch !important;
-
-    overflow-y:auto !important;
-    overflow-x:hidden !important;
-
-    padding:5px !important;
-    gap:3px !important;
-
-    -webkit-overflow-scrolling:touch;
-    overscroll-behavior-y:contain;
-    touch-action:pan-y;
-
-    scrollbar-width:auto;
-  }
-
-  .controls button{
-    flex:0 0 auto !important;
-    width:100% !important;
-    min-width:0 !important;
-  }
-}
-
+/* MOBILE FIX: komplette Zustandsliste erreichbar */
 @media(max-width:430px){
   .controls{
     left:5px !important;
-    top:8px !important;
-    bottom:8px !important;
-    width:clamp(82px,24vw,125px) !important;
-    padding:5px !important;
-    gap:3px !important;
+    right:auto !important;
+    top:10px !important;
+    bottom:10px !important;
+    transform:none !important;
+    max-width:125px;
+    max-height:calc(100svh - 20px);
+    overflow-y:auto !important;
+    overflow-x:hidden;
+    justify-content:flex-start !important;
+    align-items:stretch;
+    gap:3px;
+    padding:5px;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    touch-action:pan-y;
   }
-
   .controls button{
-    flex:0 0 auto !important;
-    width:100% !important;
-    padding:3px 4px !important;
-    font-size:clamp(7px,2vw,8px) !important;
-    line-height:1.1 !important;
+    flex:0 0 auto;
+    width:100%;
+    min-width:0;
   }
 }
-
 @media(max-width:360px){
   .controls{
     left:3px !important;
-    top:6px !important;
-    bottom:6px !important;
-    width:82px !important;
-    padding:4px !important;
-    gap:2px !important;
+    top:8px !important;
+    bottom:8px !important;
+    max-width:108px;
+    max-height:calc(100svh - 16px);
+    padding:4px;
+    gap:2px;
   }
-
   .controls button{
-    flex:0 0 auto !important;
-    width:100% !important;
-    padding:3px 4px !important;
-    font-size:7px !important;
-    line-height:1.1 !important;
+    flex:0 0 auto;
+    width:100%;
+    padding:3px 4px;
+    font-size:7px;
+    line-height:1.1;
   }
 }
 
-/* Aktive Zustandsinformation: direkt auf dem sunnys-desktop-mate-banner.png */
-#desktopMate .state-name{
-  position:fixed !important;
-  left:50% !important;
-  right:auto !important;
-  top:auto !important;
-  bottom:22px !important;
-  transform:translateX(-50%) !important;
-  z-index:1000001 !important;
-  display:block !important;
-  font-size:10px !important;
-  line-height:1.1 !important;
-  pointer-events:none;
-  white-space:nowrap;
+/* Aktiver Zustand: eigenständige Anzeige direkt OBERHALB des Banner-PNGs */
+#bannerWrap{
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  width:min(720px,70vw);
+  z-index:999997;
 }
+#desktopMateBanner{
+  position:static !important;
+  display:block;
+  width:100%;
+  height:auto;
+  transform:none !important;
+  margin:0;
+}
+#bannerStateName{
+  position:absolute;
+  left:50%;
+  bottom:100%;
+  transform:translateX(-50%);
+  margin-bottom:4px;
+  padding:4px 8px;
+  border-radius:10px;
+  color:#ffcc80;
+  border:2px solid #ff7f00;
+  background:#000;
+  box-shadow:0 0 12px rgba(255,127,0,.45);
+  font-size:10px;
+  line-height:1.1;
+  white-space:nowrap;
+  pointer-events:none;
+  z-index:2;
+}
+#desktopMateBanner:hover{
+  transform:scale(1.08) !important;
+}
+@media(max-width:700px){
+  #bannerWrap{
+    width:82vw;
+    bottom:10px;
+  }
+  #bannerStateName{
+    font-size:9px;
+    margin-bottom:3px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -647,7 +675,10 @@ body.ui-collapsed .demo{
 
 <img id="siteLogo" src="assets/sunnys-schaetze-logo.png" alt="Sunny's Schätze">
 <img id="desktopMateBadge" src="assets/desktop-mate-badge.png" alt="Desktop Mate – Ein kleiner Drache für deinen Desktop">
-<img id="desktopMateBanner" src="assets/sunnys-desktop-mate-banner.png" alt="Sunny's Schätze – Desktop Mate">
+<div id="bannerWrap">
+  <div id="bannerStateName" aria-live="polite">Normal</div>
+  <img id="desktopMateBanner" src="assets/sunnys-desktop-mate-banner.png" alt="Sunny's Schätze – Desktop Mate">
+</div>
 <button id="uiCollapse" type="button" aria-expanded="true" aria-label="Nur Sunny the Dragon Anzeigen">Nur Sunny the Dragon Anzeigen</button>
 <main class="demo">
   <section class="demo-card">
@@ -664,7 +695,6 @@ body.ui-collapsed .demo{
 
 <div id="desktopMate" data-state="normal">
   <div class="mate-wrap">
-    <div class="state-name" id="stateName">Normal</div>
     <div class="speech" id="speech"></div>
     <img class="mate-img" id="mateImg" draggable="false" src="assets/normal.png" alt="Sunny's Schätze Desktop Mate">
   </div>
@@ -693,7 +723,7 @@ body.ui-collapsed .demo{
 
   const mate = document.getElementById("desktopMate");
   const img = document.getElementById("mateImg");
-  const name = document.getElementById("stateName");
+  const name = document.getElementById("bannerStateName");
   const speech = document.getElementById("speech");
   const controls = document.getElementById("controls");
   const uiCollapse = document.getElementById("uiCollapse");
@@ -903,10 +933,11 @@ body.ui-collapsed .demo{
   window.addEventListener("resize", centerMateAtStart);
 
   const bottomBanner = document.getElementById("desktopMateBanner");
+  const bannerWrap = document.getElementById("bannerWrap");
+
   function positionControlsAboveBanner(){
     if(!controls) return;
     // Auf Smartphones übernimmt CSS die Positionierung und das Scrollen.
-    // Keine Inline-Position setzen, die die Mobile-Regeln überschreibt.
     controls.style.left = "";
     controls.style.right = "";
     controls.style.top = "";
@@ -914,22 +945,15 @@ body.ui-collapsed .demo{
     controls.style.transform = "";
   }
 
-
   function positionBottomElements(){
-    if(!bottomBanner || !controls) return;
+    if(!bottomBanner || !bannerWrap || !controls) return;
 
-    // Das Banner bleibt immer fest am unteren Rand und bekommt Vorrang.
-    bottomBanner.style.bottom = "18px";
-    bottomBanner.style.top = "auto";
+    // Der Wrapper bleibt exakt dort, wo das Banner vorher war.
+    bannerWrap.style.bottom = window.innerWidth <= 700 ? "10px" : "18px";
 
-    // Mehrere Layout-Pässe sind wichtig für Google Sites, da die tatsächliche
-    // Größe des eingebetteten Inhalts beim Start ggf. erst kurz danach feststeht.
+    // Die Zustandsanzeige sitzt strukturell direkt über dem Banner,
+    // nicht mehr im Drachen-Container.
     positionControlsAboveBanner();
-    requestAnimationFrame(()=>{
-      positionControlsAboveBanner();
-      setTimeout(positionControlsAboveBanner, 50);
-      setTimeout(positionControlsAboveBanner, 150);
-    });
   }
 
   positionBottomElements();
@@ -938,8 +962,6 @@ body.ui-collapsed .demo{
   window.addEventListener("orientationchange", ()=>setTimeout(positionBottomElements,150));
   if(bottomBanner){
     bottomBanner.addEventListener("load", positionBottomElements);
-    bottomBanner.addEventListener("mouseenter", ()=>setTimeout(positionControlsAboveBanner,20));
-    bottomBanner.addEventListener("mouseleave", ()=>setTimeout(positionControlsAboveBanner,20));
   }
 
   // =========================================================
