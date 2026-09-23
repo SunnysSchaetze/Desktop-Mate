@@ -1201,6 +1201,67 @@ body.ui-collapsed #uiCollapse{
   }
 }
 
+
+/* =========================================================
+   MOBILE: Bedienelemente wieder direkt über dem PNG-Banner
+   ========================================================= */
+@media(max-width:700px){
+  #bannerWrap{
+    width:94vw !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+  }
+
+  #bannerTop{
+    position:static !important;
+    width:100% !important;
+    max-width:100% !important;
+    min-height:0 !important;
+    margin:0 0 4px 0 !important;
+    padding:0 !important;
+    display:grid !important;
+    grid-template-columns:auto minmax(0,1fr) auto !important;
+    grid-template-rows:auto !important;
+    align-items:start !important;
+    justify-content:normal !important;
+    gap:6px !important;
+    transform:none !important;
+  }
+
+  /* Auswahlleiste direkt links oberhalb des PNG */
+  #bannerTop .controls{
+    grid-column:1 !important;
+    grid-row:1 !important;
+    justify-self:start !important;
+    align-self:start !important;
+    margin:0 !important;
+  }
+
+  /* Zustand + Button bleiben rechts in derselben oberen Zeile */
+  #bannerStateName{
+    grid-column:2 !important;
+    grid-row:1 !important;
+    justify-self:end !important;
+    align-self:start !important;
+    margin:0 !important;
+  }
+
+  #uiCollapse{
+    grid-column:3 !important;
+    grid-row:1 !important;
+    justify-self:end !important;
+    align-self:start !important;
+    margin:0 !important;
+  }
+
+  #desktopMateBanner{
+    display:block !important;
+    width:100% !important;
+    height:auto !important;
+    margin:0 !important;
+  }
+}
+
 </style>
 </head>
 <body>
