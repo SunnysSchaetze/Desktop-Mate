@@ -422,12 +422,55 @@ body.ui-collapsed .demo{
     max-width:125px;
     border-radius:12px;
     gap:3px;
+    padding:5px;
   }
   .controls button{
     padding:4px 5px;
     font-size:8px;
   }
 }
+
+/* Auf sehr kleinen Smartphones wird die linke Zustandsliste
+   automatisch kompakter, damit mehr Platz für den Inhalt bleibt. */
+@media(max-width:360px){
+  .controls{
+    left:4px;
+    max-width:108px;
+    padding:4px;
+    border-radius:10px;
+    gap:2px;
+  }
+  .controls button{
+    width:100%;
+    min-width:0;
+    padding:3px 4px;
+    border-radius:7px;
+    font-size:7px;
+    line-height:1.1;
+  }
+}
+/* Der Einklapp-Button wird auf kleinen Smartphones ebenfalls kompakter. */
+@media(max-width:430px){
+  #uiCollapse{
+    max-width:calc(100vw - 16px);
+    padding:4px 7px;
+    font-size:9px;
+    line-height:1.15;
+    white-space:normal;
+    text-align:center;
+  }
+}
+
+@media(max-width:360px){
+  #uiCollapse{
+    max-width:calc(100vw - 10px);
+    padding:3px 5px;
+    font-size:8px;
+    border-width:1px;
+    border-radius:8px;
+  }
+}
+
 
 /* Gewinnspiel-Style für Auswahlleiste, Sprechblase und Zustandsanzeige */
 .controls{
@@ -472,7 +515,7 @@ body.ui-collapsed .demo{
 <img id="siteLogo" src="assets/sunnys-schaetze-logo.png" alt="Sunny's Schätze">
 <img id="desktopMateBadge" src="assets/desktop-mate-badge.png" alt="Desktop Mate – Ein kleiner Drache für deinen Desktop">
 <img id="desktopMateBanner" src="assets/sunnys-desktop-mate-banner.png" alt="Sunny's Schätze – Desktop Mate">
-<button id="uiCollapse" type="button" aria-expanded="true" aria-label="Alle Elemente außer dem Drachen einklappen">− Elemente einklappen</button>
+<button id="uiCollapse" type="button" aria-expanded="true" aria-label="Nur Sunny the Dragon Anzeigen">Nur Sunny the Dragon Anzeigen</button>
 <main class="demo">
   <section class="demo-card">
     <h1>🐉 Sunny's Schätze – Desktop Mate</h1>
@@ -529,12 +572,12 @@ body.ui-collapsed .demo{
   uiCollapse.addEventListener("click",()=>{
     const collapsed = document.body.classList.toggle("ui-collapsed");
     uiCollapse.setAttribute("aria-expanded", String(!collapsed));
-    uiCollapse.textContent = collapsed ? "+ Alles anzeigen" : "− Nur Sunny the Dragon Anzeigen";
+    uiCollapse.textContent = collapsed ? "+ Alles anzeigen" : "Nur Sunny the Dragon Anzeigen";
     uiCollapse.setAttribute(
       "aria-label",
       collapsed
         ? "Alle ausgeblendeten Elemente anzeigen"
-        : "Alle Elemente außer dem Drachen einklappen"
+        : "Nur Sunny the Dragon Anzeigen"
     );
   });
 
