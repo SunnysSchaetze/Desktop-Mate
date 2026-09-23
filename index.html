@@ -407,53 +407,61 @@ body.ui-collapsed .demo{
 }
 @media(max-width:430px){
   #desktopMate{
-    left:clamp(112px, 30vw, 145px);
+    left:8px;
     width:145px;
     bottom:88px;
   }
   .mate-img{max-height:28vh}
   .state-name{display:none}
   .controls{
-    left:4px;
+    left:6px;
     top:50%;
     bottom:auto;
     transform:translateY(-50%);
-    width:clamp(94px, 25vw, 115px);
-    max-width:115px;
+    width:auto;
+    max-width:125px;
     border-radius:12px;
     gap:3px;
     padding:5px;
   }
   .controls button{
-    width:100%;
-    min-width:0;
     padding:4px 5px;
     font-size:8px;
   }
 }
 
-/* Auf sehr kleinen Smartphones wird die linke Zustandsliste
-   automatisch kompakter, damit mehr Platz für den Inhalt bleibt. */
-@media(max-width:360px){
-  #desktopMate{
-    left:clamp(96px, 28vw, 118px);
-    width:132px;
-  }
+/* Linke Zustandsliste auf Smartphones automatisch skalieren */
+@media(max-width:700px){
   .controls{
-    left:3px;
-    width:clamp(86px, 24vw, 104px);
-    max-width:104px;
-    padding:4px;
-    border-radius:10px;
-    gap:2px;
+    left:clamp(3px, 1.5vw, 8px);
+    max-width:clamp(90px, 30vw, 145px);
+    padding:clamp(3px, 1.2vw, 6px);
+    gap:clamp(2px, .8vw, 4px);
+    border-radius:clamp(8px, 2vw, 12px);
   }
+
   .controls button{
     width:100%;
     min-width:0;
-    padding:3px 4px;
-    border-radius:7px;
-    font-size:7px;
+    padding:clamp(3px, 1vw, 5px) clamp(3px, 1.5vw, 6px);
+    border-radius:clamp(6px, 1.8vw, 8px);
+    font-size:clamp(7px, 2.2vw, 9px);
     line-height:1.1;
+  }
+}
+
+/* Sehr kleine Smartphones */
+@media(max-width:360px){
+  .controls{
+    max-width:clamp(82px, 27vw, 108px);
+    padding:3px;
+    gap:2px;
+  }
+
+  .controls button{
+    padding:2px 3px;
+    font-size:7px;
+    border-radius:6px;
   }
 }
 /* Der Einklapp-Button wird auf kleinen Smartphones ebenfalls kompakter. */
@@ -788,9 +796,8 @@ body.ui-collapsed .demo{
   const bottomBanner = document.getElementById("desktopMateBanner");
   function positionControlsAboveBanner(){
     if(!controls) return;
-    // Die Zustandsauswahl bleibt links in einer eigenen Spalte,
-    // damit sie auf kleinen Google-Sites-Containern nicht über dem PNG liegt.
-    controls.style.left = "";
+    // Die Zustandsauswahl bleibt dauerhaft links und untereinander.
+    controls.style.left = window.innerWidth <= 430 ? "6px" : "12px";
     controls.style.top = "50%";
     controls.style.bottom = "auto";
     controls.style.transform = "translateY(-50%)";
