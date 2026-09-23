@@ -685,145 +685,369 @@ body.ui-collapsed #uiCollapse{
 }
 
 
-/* Auswahlleiste: maximal 10 sichtbare Emotes, danach scrollbar */
-.controls{
-  max-height:225px;
-  overflow-y:auto;
-  overflow-x:hidden;
-  align-content:flex-start;
-  justify-content:flex-start;
-  -webkit-overflow-scrolling:touch;
-  overscroll-behavior:contain;
-  scrollbar-width:thin;
-}
-.controls button{
-  flex:0 0 auto;
+/* Zustandsauswahl: direkt neben der aktuellen Zustandsanzeige,
+   oberhalb des Sunny's-Desktop-Mate-Banners.
+   Immer genau 5 Buttons sichtbar, weitere horizontal scrollbar. */
+#bannerWrap{
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  width:min(900px,92vw);
+  z-index:999997;
 }
 
-/* Kleine Bildschirme: kompakt und genau 10 sichtbare Emotes */
-@media(max-width:700px){
-  .controls{
-    width:96px !important;
-    max-width:96px !important;
-    max-height:194px !important;
-    padding:3px !important;
-    gap:2px !important;
-    border-radius:8px !important;
-    overflow-y:auto !important;
-    overflow-x:hidden !important;
-    justify-content:flex-start !important;
-    align-content:flex-start;
+#desktopMateBanner{
+  position:static !important;
+  display:block;
+  width:100%;
+  height:auto;
+  transform:none !important;
+  margin:0;
+}
+
+#bannerTop{
+  position:relative;
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:8px;
+  margin-bottom:6px;
+  z-index:3;
+}
+
+#bannerStateName{
+  flex:0 0 auto;
+  padding:6px 9px;
+  border-radius:10px;
+  color:#ffcc80;
+  border:2px solid #ff7f00;
+  background:#000;
+  box-shadow:0 0 12px rgba(255,127,0,.45);
+  font-size:10px;
+  line-height:1.1;
+  white-space:nowrap;
+  pointer-events:none;
+  z-index:2;
+}
+
+/* Die Liste ist nicht mehr links zwischen Badge und Banner,
+   sondern sitzt hier direkt neben der Zustandsanzeige. */
+#bannerTop .controls{
+  position:static !important;
+  flex:0 0 420px;
+  width:420px;
+  min-width:420px;
+  max-width:420px;
+  height:42px;
+  min-height:42px;
+  max-height:42px;
+  display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;
+  align-items:center;
+  justify-content:flex-start;
+  gap:6px;
+  padding:5px;
+  margin:0;
+  overflow-x:auto;
+  overflow-y:hidden;
+  border:2px solid #ff7f00;
+  border-radius:10px;
+  background:#000;
+  box-shadow:0 0 12px rgba(255,127,0,.45);
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-x:contain;
+  scrollbar-width:thin;
+}
+
+#bannerTop .controls button{
+  flex:0 0 78px;
+  width:78px;
+  min-width:78px;
+  max-width:78px;
+  height:28px;
+  min-height:28px;
+  max-height:28px;
+  padding:3px 5px;
+  border:2px solid #ff7f00;
+  border-radius:7px;
+  color:#ffcc80;
+  background:transparent;
+  font-weight:bold;
+  font-size:10px;
+  line-height:1;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  cursor:pointer;
+  box-shadow:0 0 8px rgba(255,127,0,.35);
+  transition:.3s ease;
+}
+
+#bannerTop .controls button:hover{
+  box-shadow:0 0 18px rgba(255,127,0,.9);
+  border-color:#ff9a2f;
+  background:transparent;
+  transform:scale(1.03);
+  color:#ff7f00;
+}
+
+#uiCollapse{
+  flex:0 0 auto;
+  position:static;
+  z-index:1000002;
+  border:2px solid #ff7f00;
+  border-radius:10px;
+  padding:6px 10px;
+  background:#000;
+  color:#ffcc80;
+  font-weight:bold;
+  font-size:10px;
+  line-height:1.1;
+  cursor:pointer;
+  box-shadow:0 0 12px rgba(255,127,0,.45);
+  white-space:nowrap;
+}
+
+#uiCollapse:hover{
+  box-shadow:0 0 22px rgba(255,127,0,.9);
+  border-color:#ff9a2f;
+  background:transparent;
+  transform:scale(1.03);
+  color:#ff7f00;
+}
+
+@media(max-width:1100px){
+  #bannerWrap{
+    width:min(900px,94vw);
   }
-  .controls button{
-    width:100% !important;
-    min-width:0 !important;
-    height:17px !important;
-    min-height:17px !important;
-    max-height:17px !important;
-    padding:1px 3px !important;
-    margin:0 !important;
-    border-radius:5px !important;
-    font-size:7px !important;
-    line-height:1 !important;
-    flex:0 0 17px !important;
-    white-space:nowrap;
+
+  #bannerTop{
+    gap:6px;
+  }
+
+  #bannerTop .controls{
+  }
+
+  #bannerTop .controls button{
+    font-size:9px;
+  }
+
+  #uiCollapse{
+    padding:5px 7px;
+    font-size:9px;
+  }
+}
+
+@media(max-width:700px){
+  #bannerWrap{
+    width:94vw;
+    bottom:10px;
+  }
+
+  #bannerTop{
+    justify-content:center;
+    gap:4px;
+    margin-bottom:4px;
+  }
+
+  #bannerStateName{
+    padding:5px 6px;
+    font-size:8px;
+    max-width:70px;
     overflow:hidden;
     text-overflow:ellipsis;
   }
+
+  #bannerTop .controls{
+    flex:0 0 260px;
+    width:260px;
+    min-width:260px;
+    max-width:260px;
+    height:34px;
+    min-height:34px;
+    max-height:34px;
+    gap:3px;
+    padding:3px;
+    border-radius:8px;
+  }
+
+  #bannerTop .controls button{
+    flex-basis:49px;
+    width:49px;
+    min-width:49px;
+    max-width:49px;
+    height:24px;
+    min-height:24px;
+    max-height:24px;
+    padding:2px 3px;
+    border-radius:5px;
+    font-size:7px;
+  }
+
+  #uiCollapse{
+    max-width:92px;
+    padding:4px 5px;
+    font-size:7px;
+    white-space:normal;
+    text-align:center;
+  }
 }
 
-/* Sehr kleine Bildschirme */
 @media(max-width:430px){
-  .controls{
-    width:88px !important;
-    max-width:88px !important;
-    max-height:184px !important;
+  #bannerTop{
+    gap:3px;
   }
-  .controls button{
-    height:16px !important;
-    min-height:16px !important;
-    max-height:16px !important;
-    font-size:6.5px !important;
-    flex-basis:16px !important;
+
+  #bannerStateName{
+    max-width:58px;
+    padding:4px 5px;
+    font-size:7px;
+  }
+
+  #bannerTop .controls{
+    flex-basis:240px;
+    width:240px;
+    min-width:240px;
+    max-width:240px;
+    height:31px;
+    min-height:31px;
+    max-height:31px;
+    gap:2px;
+    padding:2px;
+  }
+
+  #bannerTop .controls button{
+    flex-basis:45px;
+    width:45px;
+    min-width:45px;
+    max-width:45px;
+    height:23px;
+    min-height:23px;
+    max-height:23px;
+    font-size:6.5px;
+  }
+
+  #uiCollapse{
+    max-width:62px;
+    padding:3px 4px;
+    font-size:6.5px;
   }
 }
 
 @media(max-width:360px){
-  .controls{
-    width:82px !important;
-    max-width:82px !important;
-    max-height:174px !important;
+  #bannerStateName{
+    max-width:50px;
+    font-size:6.5px;
   }
-  .controls button{
-    height:15px !important;
-    min-height:15px !important;
-    max-height:15px !important;
-    font-size:6px !important;
-    flex-basis:15px !important;
+
+  #bannerTop .controls{
+    height:29px;
+    min-height:29px;
+    max-height:29px;
+  }
+
+  #bannerTop .controls button{
+    height:21px;
+    min-height:21px;
+    max-height:21px;
+    font-size:6px;
+  }
+
+  #uiCollapse{
+    max-width:54px;
+    font-size:6px;
   }
 }
 
-
-/* AUSWAHLLISTE: links, voller verfügbarer Bereich zwischen Badge und Banner */
-.controls{
-  position:fixed !important;
-  left:8px !important;
-  right:auto !important;
-  top:228px !important;
-  bottom:86px !important;
-  transform:none !important;
-  max-height:none !important;
-  height:auto !important;
-  overflow-y:auto !important;
-  overflow-x:hidden !important;
+/* =========================================================
+   AUSWAHLLEISTE VERTIKAL
+   ========================================================= */
+/* Auswahlleiste vertikal – Position des Containers bleibt unverändert */
+#bannerTop .controls{
+  flex:0 0 150px !important;
+  width:150px !important;
+  min-width:150px !important;
+  max-width:150px !important;
+  height:166px !important;
+  min-height:166px !important;
+  max-height:166px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  flex-wrap:nowrap !important;
+  align-items:stretch !important;
   justify-content:flex-start !important;
-  align-content:flex-start !important;
-  box-sizing:border-box;
+  gap:6px !important;
+  padding:6px !important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
 }
 
-/* Auf mittleren Bildschirmen den vorhandenen Bereich vollständig nutzen */
-@media(min-width:701px){
-  .controls{
-    top:228px !important;
-    bottom:86px !important;
-    max-height:none !important;
-  }
+#bannerTop .controls button{
+  flex:0 0 auto !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  height:28px !important;
+  min-height:28px !important;
+  max-height:28px !important;
+  box-sizing:border-box !important;
+  padding:3px 5px !important;
 }
 
-/* Kleine Bildschirme: Bereich zwischen Badge und Banner vollständig nutzen */
+/* Position und Anordnung von #bannerTop bleiben wie im Original */
 @media(max-width:700px){
-  .controls{
-    left:5px !important;
-    right:auto !important;
-    top:calc(10px + 48vw + 8px) !important;
-    bottom:calc(10px + 18vw + 8px) !important;
-    width:96px !important;
-    max-width:96px !important;
-    max-height:none !important;
-    height:auto !important;
-    padding:3px !important;
-    gap:2px !important;
+  #bannerTop .controls{
+    flex:0 0 clamp(105px,30vw,150px) !important;
+    width:clamp(105px,30vw,150px) !important;
+    min-width:clamp(105px,30vw,150px) !important;
+    max-width:clamp(105px,30vw,150px) !important;
+    height:145px !important;
+    min-height:145px !important;
+    max-height:145px !important;
     overflow-y:auto !important;
-    overflow-x:hidden !important;
+    gap:4px !important;
+    padding:4px !important;
+  }
+
+  #bannerTop .controls button{
+    height:25px !important;
+    min-height:25px !important;
+    max-height:25px !important;
+    font-size:clamp(7px,2vw,9px) !important;
   }
 }
 
-@media(max-width:430px){
-  .controls{
-    width:88px !important;
-    max-width:88px !important;
-    top:calc(10px + 48vw + 8px) !important;
-    bottom:calc(10px + 18vw + 8px) !important;
-  }
+
+/* =========================================================
+   SCROLL-SLIDER DER AUSWAHLLEISTE – passend zum Orange-Theme
+   ========================================================= */
+#bannerTop .controls{
+  scrollbar-color:#ff7f00 #000000 !important;
+  scrollbar-width:thin !important;
 }
 
-@media(max-width:360px){
-  .controls{
-    width:82px !important;
-    max-width:82px !important;
-    top:calc(8px + 48vw + 6px) !important;
-    bottom:calc(8px + 18vw + 6px) !important;
-  }
+#bannerTop .controls::-webkit-scrollbar{
+  width:8px;
+}
+
+#bannerTop .controls::-webkit-scrollbar-track{
+  background:#000000;
+  border-radius:999px;
+}
+
+#bannerTop .controls::-webkit-scrollbar-thumb{
+  background:#ff7f00;
+  border-radius:999px;
+  border:1px solid #ffcc80;
+}
+
+#bannerTop .controls::-webkit-scrollbar-thumb:hover{
+  background:#ff9a2f;
 }
 
 </style>
@@ -836,8 +1060,9 @@ body.ui-collapsed #uiCollapse{
 <img id="desktopMateBadge" src="assets/desktop-mate-badge.png" alt="Desktop Mate – Ein kleiner Drache für deinen Desktop">
 <div id="bannerWrap">
   <div id="bannerTop">
+    <div class="controls" id="controls" aria-label="Desktop-Mate-Zustände"></div>
     <div id="bannerStateName" aria-live="polite">Normal</div>
-    <button id="uiCollapse" type="button" aria-expanded="true" aria-label="-  Nur Sunny the Dragon Anzeigen">-  Nur Sunny the Dragon Anzeigen</button>
+        <button id="uiCollapse" type="button" aria-expanded="true" aria-label="-  Nur Sunny the Dragon Anzeigen">-  Nur Sunny the Dragon Anzeigen</button>
   </div>
   <img id="desktopMateBanner" src="assets/sunnys-desktop-mate-banner.png" alt="Sunny's Schätze – Desktop Mate">
 </div>
@@ -860,7 +1085,7 @@ body.ui-collapsed #uiCollapse{
     <img class="mate-img" id="mateImg" draggable="false" src="assets/normal.png" alt="Sunny's Schätze Desktop Mate">
   </div>
 </div>
-<div class="controls" id="controls" aria-label="Desktop-Mate-Zustände"></div>
+
 
 <script>
 (() => {
@@ -1100,38 +1325,6 @@ body.ui-collapsed #uiCollapse{
   });
 
   window.addEventListener("resize", centerMateAtStart);
-
-  const bottomBanner = document.getElementById("desktopMateBanner");
-  const bannerWrap = document.getElementById("bannerWrap");
-
-  function positionControlsAboveBanner(){
-    if(!controls) return;
-    // Auf Smartphones übernimmt CSS die Positionierung und das Scrollen.
-    controls.style.left = "";
-    controls.style.right = "";
-    controls.style.top = "";
-    controls.style.bottom = "";
-    controls.style.transform = "";
-  }
-
-  function positionBottomElements(){
-    if(!bottomBanner || !bannerWrap || !controls) return;
-
-    // Der Wrapper bleibt exakt dort, wo das Banner vorher war.
-    bannerWrap.style.bottom = window.innerWidth <= 700 ? "10px" : "18px";
-
-    // Die Zustandsanzeige sitzt strukturell direkt über dem Banner,
-    // nicht mehr im Drachen-Container.
-    positionControlsAboveBanner();
-  }
-
-  positionBottomElements();
-  window.addEventListener("load", positionBottomElements);
-  window.addEventListener("resize", positionBottomElements);
-  window.addEventListener("orientationchange", ()=>setTimeout(positionBottomElements,150));
-  if(bottomBanner){
-    bottomBanner.addEventListener("load", positionBottomElements);
-  }
 
   // =========================================================
   // ANIMIERTER STERNE-HINTERGRUND + STERNSCHNUPPEN
