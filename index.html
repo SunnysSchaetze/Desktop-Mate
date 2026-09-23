@@ -259,10 +259,16 @@ body{
 }
 body.ui-collapsed #siteLogo,
 body.ui-collapsed #desktopMateBadge,
-body.ui-collapsed #bannerWrap,
+body.ui-collapsed #bannerWrap > #desktopMateBanner,
+body.ui-collapsed #bannerWrap > #bannerStateName,
 body.ui-collapsed #controls,
 body.ui-collapsed .demo{
   display:none !important;
+}
+
+/* Der Umschalt-Button bleibt auch im eingeklappten Zustand sichtbar. */
+body.ui-collapsed #uiCollapse{
+  display:block !important;
 }
 
 /* Cursor-System aus der Zustandschecklisten-Seite */
@@ -745,14 +751,22 @@ body.ui-collapsed .demo{
   // Alle Seitenelemente außer dem Drachen ein-/ausklappen.
   uiCollapse.addEventListener("click",()=>{
     const collapsed = document.body.classList.toggle("ui-collapsed");
+
     uiCollapse.setAttribute("aria-expanded", String(!collapsed));
-    uiCollapse.textContent = collapsed ? "+ Alles anzeigen" : "-  Nur Sunny the Dragon Anzeigen";
-    uiCollapse.setAttribute(
-      "aria-label",
-      collapsed
-        ? "Alle ausgeblendeten Elemente anzeigen"
-        : "-  Nur Sunny the Dragon Anzeigen"
-    );
+
+    if(collapsed){
+      uiCollapse.textContent = "+ Alles anzeigen";
+      uiCollapse.setAttribute(
+        "aria-label",
+        "Alle ausgeblendeten Elemente anzeigen"
+      );
+    }else{
+      uiCollapse.textContent = "-  Nur Sunny the Dragon Anzeigen";
+      uiCollapse.setAttribute(
+        "aria-label",
+        "Nur Sunny the Dragon Anzeigen"
+      );
+    }
   });
 
   states.forEach(([key,label])=>{
