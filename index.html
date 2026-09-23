@@ -1086,6 +1086,121 @@ body.ui-collapsed #uiCollapse{
   margin-right:auto !important;
 }
 
+
+/* =========================================================
+   MOBILE: Auswahlleiste links, Zustandsinfo + Button rechts
+   ========================================================= */
+@media(max-width:700px){
+  #bannerTop{
+    display:flex !important;
+    flex-direction:row !important;
+    align-items:flex-start !important;
+    justify-content:space-between !important;
+    width:100% !important;
+  }
+
+  #bannerTop .controls{
+    order:0 !important;
+    align-self:flex-start !important;
+    flex:0 0 clamp(105px,30vw,150px) !important;
+    width:clamp(105px,30vw,150px) !important;
+    min-width:clamp(105px,30vw,150px) !important;
+    max-width:clamp(105px,30vw,150px) !important;
+    margin-left:0 !important;
+    margin-right:auto !important;
+  }
+
+  #bannerStateName{
+    order:1 !important;
+    margin-left:auto !important;
+    margin-right:8px !important;
+    align-self:flex-start !important;
+  }
+
+  #bannerTop .collapseBtn{
+    order:2 !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+    align-self:flex-start !important;
+  }
+}
+
+
+/* Auswahlleiste optisch und strukturell von Zustandsinfo/Toggle trennen */
+#bannerTop .controls{
+  align-self:flex-start !important;
+  margin-left:0 !important;
+  margin-right:auto !important;
+}
+
+#bannerStateName,
+#bannerTop .collapseBtn{
+  flex-shrink:0 !important;
+}
+
+/* Auf kleinen Bildschirmen: drei klar getrennte Bereiche */
+@media(max-width:700px){
+  #bannerTop{
+    gap:0 !important;
+  }
+
+  #bannerTop .controls{
+    margin-right:12px !important;
+  }
+
+  #bannerStateName{
+    margin-left:auto !important;
+    margin-right:12px !important;
+  }
+
+  #bannerTop .collapseBtn{
+    margin-left:0 !important;
+  }
+}
+
+
+/* =========================================================
+   MOBILE: Auswahl links, Zustand + Einklapp/Ausfahr-Button rechts
+   Der gesamte Bereich nutzt die volle Breite des Containers.
+   ========================================================= */
+@media(max-width:700px){
+  #bannerTop{
+    left:0 !important;
+    right:0 !important;
+    width:100% !important;
+    max-width:none !important;
+    transform:none !important;
+    display:flex !important;
+    flex-direction:row !important;
+    align-items:flex-start !important;
+    justify-content:space-between !important;
+    gap:6px !important;
+  }
+
+  #bannerTop .controls{
+    flex:0 0 clamp(105px,30vw,150px) !important;
+    width:clamp(105px,30vw,150px) !important;
+    min-width:clamp(105px,30vw,150px) !important;
+    max-width:clamp(105px,30vw,150px) !important;
+    margin:0 !important;
+    order:0 !important;
+  }
+
+  #bannerStateName{
+    margin-left:auto !important;
+    margin-right:0 !important;
+    order:1 !important;
+    align-self:flex-start !important;
+  }
+
+  #uiCollapse{
+    margin:0 !important;
+    order:2 !important;
+    align-self:flex-start !important;
+    flex:0 0 auto !important;
+  }
+}
+
 </style>
 </head>
 <body>
