@@ -667,72 +667,6 @@ body.ui-collapsed .demo{
   }
 }
 
-
-/* Google Sites: Zustandsauswahl auf kleinen Containern zwischen
-   Desktop-Mate-Badge und Desktop-Mate-Banner, vollständig scrollbar. */
-@media(max-width:700px){
-  .controls{
-    position:fixed !important;
-    left:50% !important;
-    right:auto !important;
-    top:50% !important;
-    bottom:auto !important;
-    transform:translate(-50%,-50%) !important;
-
-    width:min(42vw, 210px) !important;
-    max-width:210px !important;
-    max-height:calc(100svh - 120px) !important;
-
-    overflow-y:auto !important;
-    overflow-x:hidden !important;
-    justify-content:flex-start !important;
-    align-items:stretch !important;
-
-    padding:5px !important;
-    gap:3px !important;
-    border-radius:12px !important;
-
-    -webkit-overflow-scrolling:touch;
-    overscroll-behavior:contain;
-    touch-action:pan-y;
-    scrollbar-width:thin;
-    z-index:1000000 !important;
-  }
-
-  .controls button{
-    flex:0 0 auto !important;
-    width:100% !important;
-    min-width:0 !important;
-    padding:5px 6px !important;
-    font-size:clamp(8px, 2.1vw, 10px) !important;
-    line-height:1.1 !important;
-  }
-}
-
-/* Sehr kleine Google-Sites-Container: die Liste bleibt zwischen den
-   beiden Grafiken und bekommt einfach mehr Scrollhöhe. */
-@media(max-width:430px){
-  .controls{
-    width:min(44vw, 170px) !important;
-    max-width:170px !important;
-    max-height:calc(100svh - 105px) !important;
-  }
-}
-
-@media(max-width:360px){
-  .controls{
-    width:min(46vw, 145px) !important;
-    max-width:145px !important;
-    max-height:calc(100svh - 90px) !important;
-    padding:4px !important;
-    gap:2px !important;
-  }
-  .controls button{
-    padding:4px 5px !important;
-    font-size:7.5px !important;
-  }
-}
-
 </style>
 </head>
 <body>
@@ -1014,36 +948,12 @@ body.ui-collapsed .demo{
   function positionBottomElements(){
     if(!bottomBanner || !bannerWrap || !controls) return;
 
-    // Das Banner bleibt an seiner bisherigen Position.
+    // Der Wrapper bleibt exakt dort, wo das Banner vorher war.
     bannerWrap.style.bottom = window.innerWidth <= 700 ? "10px" : "18px";
 
+    // Die Zustandsanzeige sitzt strukturell direkt über dem Banner,
+    // nicht mehr im Drachen-Container.
     positionControlsAboveBanner();
-
-    // Auf kleinen Google-Sites-Containern liegt die Zustandsliste
-    // ausschließlich in der freien Mitte zwischen Badge (oben links)
-    // und Banner (unten). Wenn diese Fläche zu klein wird, scrollt
-    // die Liste innerhalb ihres eigenen Containers.
-    if(window.innerWidth <= 700){
-      const badge = document.getElementById("desktopMateBadge");
-      if(badge){
-        const br = badge.getBoundingClientRect();
-        const bannerRect = bannerWrap.getBoundingClientRect();
-        const gapTop = Math.max(8, br.bottom + 8);
-        const gapBottom = Math.min(window.innerHeight - 8, bannerRect.top - 8);
-        const available = gapBottom - gapTop;
-
-        // In der freien Fläche zentrieren; bei sehr wenig Platz
-        // bleibt die Liste oben in dieser Fläche und wird scrollbar.
-        const listHeight = Math.min(
-          Math.max(90, available),
-          Math.max(90, window.innerHeight - 70)
-        );
-
-        controls.style.top = Math.round(gapTop + Math.max(0, (available - listHeight) / 2)) + "px";
-        controls.style.maxHeight = Math.max(70, listHeight) + "px";
-        controls.style.transform = "translateX(-50%)";
-      }
-    }
   }
 
   positionBottomElements();
@@ -1052,10 +962,6 @@ body.ui-collapsed .demo{
   window.addEventListener("orientationchange", ()=>setTimeout(positionBottomElements,150));
   if(bottomBanner){
     bottomBanner.addEventListener("load", positionBottomElements);
-  }
-  const desktopMateBadge = document.getElementById("desktopMateBadge");
-  if(desktopMateBadge){
-    desktopMateBadge.addEventListener("load", positionBottomElements);
   }
 
   // =========================================================
