@@ -56,12 +56,6 @@ body{
 }
 #desktopMate.dragging{cursor:grabbing}
 #desktopMate .mate-img{cursor:pointer;}
-#desktopMate.minimized{width:74px}
-#desktopMate.minimized .mate-img{width:74px;height:74px}
-#desktopMate.minimized .speech,
-#desktopMate.minimized .controls,
-#desktopMate.minimized .state-name{display:none}
-
 #desktopMate .speech,
 #desktopMate .state-name{
   color:#ff7f00;
@@ -137,11 +131,6 @@ body{
   border-color:#ff7f00;
   background:#333333;
   box-shadow:0 0 10px rgba(255,127,0,.28);
-}
-.minimize{
-  position:absolute;right:-10px;top:15px;width:25px;height:25px;border:0;
-  border-radius:50%;background:#0a142b;color:white;cursor:pointer;
-  border:1px solid #31577e;z-index:3;
 }
 #desktopMate[data-state="normal"] .mate-img{animation:idle 2.8s ease-in-out infinite}
 #desktopMate[data-state="gehen"] .mate-img{animation:go .55s ease-in-out infinite alternate}
@@ -634,6 +623,22 @@ body.ui-collapsed .demo{
     line-height:1.1 !important;
   }
 }
+
+/* Aktive Zustandsinformation: direkt auf dem sunnys-desktop-mate-banner.png */
+#desktopMate .state-name{
+  position:fixed !important;
+  left:50% !important;
+  right:auto !important;
+  top:auto !important;
+  bottom:22px !important;
+  transform:translateX(-50%) !important;
+  z-index:1000001 !important;
+  display:block !important;
+  font-size:10px !important;
+  line-height:1.1 !important;
+  pointer-events:none;
+  white-space:nowrap;
+}
 </style>
 </head>
 <body>
@@ -659,7 +664,6 @@ body.ui-collapsed .demo{
 
 <div id="desktopMate" data-state="normal">
   <div class="mate-wrap">
-    <button class="minimize" id="minimize" title="Minimieren">−</button>
     <div class="state-name" id="stateName">Normal</div>
     <div class="speech" id="speech"></div>
     <img class="mate-img" id="mateImg" draggable="false" src="assets/normal.png" alt="Sunny's Schätze Desktop Mate">
@@ -692,7 +696,6 @@ body.ui-collapsed .demo{
   const name = document.getElementById("stateName");
   const speech = document.getElementById("speech");
   const controls = document.getElementById("controls");
-  const minimize = document.getElementById("minimize");
   const uiCollapse = document.getElementById("uiCollapse");
   let speechTimer, idleTimer, dragging=false, movedWhileDragging=false, pressedOnImage=false, ox=0, oy=0;
 
@@ -731,7 +734,7 @@ body.ui-collapsed .demo{
   }
 
   function randomIdle(){
-    if(dragging || mate.classList.contains("minimized")){
+    if(dragging){
       resetInactivityTimer();
       return;
     }
@@ -740,7 +743,7 @@ body.ui-collapsed .demo{
     setState(key,false);
     clearTimeout(idleTimer);
     idleTimer=setTimeout(()=>{
-      if(!dragging && !mate.classList.contains("minimized")){
+      if(!dragging){
         setState("normal",false);
       }
     },2600);
@@ -847,7 +850,7 @@ body.ui-collapsed .demo{
 
     // Beim einfachen Klick auf den Drachen zufällig ein Emote
     // aus der gleichen Liste wie die Buttons ausführen.
-    if(wasClick && clickedImage && !mate.classList.contains("minimized")){
+    if(wasClick && clickedImage){
       const selectable = states.filter(([key]) => key !== mate.dataset.state);
       const [key] = selectable[Math.floor(Math.random() * selectable.length)];
       setState(key, true);
@@ -863,19 +866,12 @@ body.ui-collapsed .demo{
     mate.classList.remove("dragging");
   });
 
-  minimize.onclick=()=>{
-    mate.classList.toggle("minimized");
-    minimize.textContent=mate.classList.contains("minimized")?"+":"−";
-  };
-
   setState("normal",false);
 
   // Beim Start steht der Drache mittig im sichtbaren Bereich.
   // Wichtig für Google Sites/kleine Bildschirme: Die Position wird nach dem
   // Layout berechnet und innerhalb des sichtbaren Bereichs begrenzt.
   function centerMateAtStart(){
-    if(mate.classList.contains("minimized")) return;
-
     const rect = mate.getBoundingClientRect();
     const margin = 8;
 
