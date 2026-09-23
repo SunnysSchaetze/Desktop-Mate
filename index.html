@@ -108,15 +108,18 @@ body{
 .speech.show{opacity:1;transform:none}
 .controls{
   position:fixed;
-  left:50%;
-  bottom:clamp(100px, 13vh, 135px);
-  transform:translateX(-50%);
+  left:12px;
+  top:50%;
+  bottom:auto;
+  transform:translateY(-50%);
   display:flex;
-  flex-wrap:wrap;
+  flex-direction:column;
+  flex-wrap:nowrap;
   justify-content:center;
-  align-items:center;
+  align-items:stretch;
   gap:5px;
-  width:min(94vw, 760px);
+  width:auto;
+  max-width:170px;
   padding:7px;
   border-radius:16px;
   box-shadow:0 8px 25px rgba(0,0,0,.4);
@@ -202,10 +205,14 @@ body{
     max-width:min(230px,70vw);
   }
   .controls{
-    width:min(96vw, 620px);
+    left:8px;
+    top:50%;
+    bottom:auto;
+    transform:translateY(-50%);
+    width:auto;
+    max-width:145px;
     gap:4px;
     padding:6px;
-    bottom:clamp(100px, 14vh, 130px);
   }
   .controls button{
     padding:5px 6px;
@@ -390,8 +397,12 @@ body.ui-collapsed .demo{
   }
   .mate-img{width:185px;height:auto}
   .controls{
-    width:min(94vw, 680px);
-    bottom:clamp(104px, 13vh, 135px);
+    left:12px;
+    top:50%;
+    bottom:auto;
+    transform:translateY(-50%);
+    width:auto;
+    max-width:165px;
   }
 }
 @media(max-width:430px){
@@ -403,10 +414,14 @@ body.ui-collapsed .demo{
   .mate-img{max-height:28vh}
   .state-name{display:none}
   .controls{
-    width:96vw;
+    left:6px;
+    top:50%;
+    bottom:auto;
+    transform:translateY(-50%);
+    width:auto;
+    max-width:125px;
     border-radius:12px;
     gap:3px;
-    bottom:clamp(94px, 14vh, 112px);
   }
   .controls button{
     padding:4px 5px;
@@ -545,14 +560,31 @@ body.ui-collapsed .demo{
   }
 
   function randomIdle(){
-    if(dragging || mate.classList.contains("minimized")) return;
+    if(dragging || mate.classList.contains("minimized")){
+      resetInactivityTimer();
+      return;
+    }
     const pool=["normal","gehen","sitzen","neugierig","winken","snacken","schlafen","zocken"];
     const key=pool[Math.floor(Math.random()*pool.length)];
     setState(key,false);
     clearTimeout(idleTimer);
-    idleTimer=setTimeout(()=>setState("normal",false),2600);
+    idleTimer=setTimeout(()=>{
+      if(!dragging && !mate.classList.contains("minimized")){
+        setState("normal",false);
+      }
+    },2600);
+    resetInactivityTimer();
   }
-  setInterval(randomIdle,7000);
+
+  function resetInactivityTimer(){
+    clearTimeout(idleTimer);
+    idleTimer=setTimeout(()=>{
+      randomIdle();
+    },30000);
+  }
+
+  // Start: Erst nach 30 Sekunden Inaktivität reagieren
+  resetInactivityTimer();
 
   const clickReactions = [
     ["normal","Da bist du ja! 🐉✨"],
@@ -572,6 +604,26 @@ body.ui-collapsed .demo{
     ["zocken","Zeit zum Zocken! 🎮🔥"]
   ];
 
+  // Jede Benutzeraktivität setzt den 30-Sekunden-Inaktivitätstimer zurück.
+  document.addEventListener("mousemove",()=>{
+    resetInactivityTimer();
+  });
+
+  document.addEventListener("touchstart",()=>{
+    resetInactivityTimer();
+  },{passive:true});
+
+  document.addEventListener("touchmove",()=>{
+    resetInactivityTimer();
+  },{passive:true});
+
+  document.addEventListener("click",()=>{
+    resetInactivityTimer();
+  });
+
+  document.addEventListener("pointerdown",()=>{
+    resetInactivityTimer();
+  });
 
 
   mate.addEventListener("mousemove",e=>{
@@ -685,21 +737,38 @@ body.ui-collapsed .demo{
 
   const bottomBanner = document.getElementById("desktopMateBanner");
   function positionControlsAboveBanner(){
-    if(!bottomBanner || !controls) return;
-
-    // Die Liste endet mit einem festen kleinen Abstand genau oberhalb
-    // des unteren PNGs. Dadurch wird das PNG niemals von der Liste überdeckt.
-    const rect = bottomBanner.getBoundingClientRect();
-    const gap = 10;
-
-    controls.style.top = "auto";
-    controls.style.bottom = Math.max(18, Math.round(window.innerHeight - rect.top + gap)) + "px";
+    if(!controls) return;
+    // Die Zustandsauswahl bleibt dauerhaft links und untereinander.
+    controls.style.left = window.innerWidth <= 430 ? "6px" : "12px";
+    controls.style.top = "50%";
+    controls.style.bottom = "auto";
+    controls.style.transform = "translateY(-50%)";
   }
 
-  positionControlsAboveBanner();
-  window.addEventListener("resize", positionControlsAboveBanner);
-  window.addEventListener("orientationchange", ()=>setTimeout(positionControlsAboveBanner,150));
+
+  function positionBottomElements(){
+    if(!bottomBanner || !controls) return;
+
+    // Das Banner bleibt immer fest am unteren Rand und bekommt Vorrang.
+    bottomBanner.style.bottom = "18px";
+    bottomBanner.style.top = "auto";
+
+    // Mehrere Layout-Pässe sind wichtig für Google Sites, da die tatsächliche
+    // Größe des eingebetteten Inhalts beim Start ggf. erst kurz danach feststeht.
+    positionControlsAboveBanner();
+    requestAnimationFrame(()=>{
+      positionControlsAboveBanner();
+      setTimeout(positionControlsAboveBanner, 50);
+      setTimeout(positionControlsAboveBanner, 150);
+    });
+  }
+
+  positionBottomElements();
+  window.addEventListener("load", positionBottomElements);
+  window.addEventListener("resize", positionBottomElements);
+  window.addEventListener("orientationchange", ()=>setTimeout(positionBottomElements,150));
   if(bottomBanner){
+    bottomBanner.addEventListener("load", positionBottomElements);
     bottomBanner.addEventListener("mouseenter", ()=>setTimeout(positionControlsAboveBanner,20));
     bottomBanner.addEventListener("mouseleave", ()=>setTimeout(positionControlsAboveBanner,20));
   }
