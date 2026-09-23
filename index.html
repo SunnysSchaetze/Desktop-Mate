@@ -516,28 +516,8 @@ body.ui-collapsed .demo{
 }
 
 
-/* Smartphone: Zustandsliste ist vollständig scrollbar */
-@media(max-width:700px){
-  .controls{
-    max-height:calc(100svh - 24px);
-    overflow-y:auto;
-    overflow-x:hidden;
-    justify-content:flex-start;
-    -webkit-overflow-scrolling:touch;
-    overscroll-behavior:contain;
-    touch-action:pan-y;
-    scrollbar-width:thin;
-  }
-  .controls button{
-    flex:0 0 auto;
-  }
-}
-
-@media(max-width:430px){
-  .controls{
-    max-height:calc(100svh - 20px);
-  }
-}
+/* Die Scroll-/Positionierungsregeln für Smartphones stehen gesammelt
+   im abschließenden MOBILE FIX weiter unten. */
 
 /* Gewinnspiel-Style für Auswahlleiste, Sprechblase und Zustandsanzeige */
 .controls{
@@ -575,48 +555,83 @@ body.ui-collapsed .demo{
 }
 
 
-/* MOBILE FIX: komplette Zustandsliste erreichbar */
-@media(max-width:430px){
+/* MOBILE FIX: Zustandsliste im Google-Sites-Container vollständig scrollbar */
+@media(max-width:700px){
   .controls{
-    left:5px !important;
+    position:fixed !important;
+    left:4px !important;
     right:auto !important;
     top:10px !important;
     bottom:10px !important;
+
     transform:none !important;
-    max-width:125px;
-    max-height:calc(100svh - 20px);
-    overflow-y:auto !important;
-    overflow-x:hidden;
+
+    width:clamp(82px,24vw,112px) !important;
+    max-width:none !important;
+
+    height:auto !important;
+    max-height:none !important;
+
+    display:flex !important;
+    flex-direction:column !important;
     justify-content:flex-start !important;
-    align-items:stretch;
-    gap:3px;
-    padding:5px;
+    align-items:stretch !important;
+
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+
+    padding:5px !important;
+    gap:3px !important;
+
     -webkit-overflow-scrolling:touch;
-    overscroll-behavior:contain;
+    overscroll-behavior-y:contain;
     touch-action:pan-y;
+
+    scrollbar-width:auto;
   }
+
   .controls button{
-    flex:0 0 auto;
-    width:100%;
-    min-width:0;
+    flex:0 0 auto !important;
+    width:100% !important;
+    min-width:0 !important;
   }
 }
+
+@media(max-width:430px){
+  .controls{
+    left:5px !important;
+    top:8px !important;
+    bottom:8px !important;
+    width:clamp(82px,24vw,125px) !important;
+    padding:5px !important;
+    gap:3px !important;
+  }
+
+  .controls button{
+    flex:0 0 auto !important;
+    width:100% !important;
+    padding:3px 4px !important;
+    font-size:clamp(7px,2vw,8px) !important;
+    line-height:1.1 !important;
+  }
+}
+
 @media(max-width:360px){
   .controls{
     left:3px !important;
-    top:8px !important;
-    bottom:8px !important;
-    max-width:108px;
-    max-height:calc(100svh - 16px);
-    padding:4px;
-    gap:2px;
+    top:6px !important;
+    bottom:6px !important;
+    width:82px !important;
+    padding:4px !important;
+    gap:2px !important;
   }
+
   .controls button{
-    flex:0 0 auto;
-    width:100%;
-    padding:3px 4px;
-    font-size:7px;
-    line-height:1.1;
+    flex:0 0 auto !important;
+    width:100% !important;
+    padding:3px 4px !important;
+    font-size:7px !important;
+    line-height:1.1 !important;
   }
 }
 </style>
