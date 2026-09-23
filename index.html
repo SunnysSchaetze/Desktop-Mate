@@ -407,24 +407,26 @@ body.ui-collapsed .demo{
 }
 @media(max-width:430px){
   #desktopMate{
-    left:8px;
+    left:clamp(112px, 30vw, 145px);
     width:145px;
     bottom:88px;
   }
   .mate-img{max-height:28vh}
   .state-name{display:none}
   .controls{
-    left:6px;
+    left:4px;
     top:50%;
     bottom:auto;
     transform:translateY(-50%);
-    width:auto;
-    max-width:125px;
+    width:clamp(94px, 25vw, 115px);
+    max-width:115px;
     border-radius:12px;
     gap:3px;
     padding:5px;
   }
   .controls button{
+    width:100%;
+    min-width:0;
     padding:4px 5px;
     font-size:8px;
   }
@@ -433,9 +435,14 @@ body.ui-collapsed .demo{
 /* Auf sehr kleinen Smartphones wird die linke Zustandsliste
    automatisch kompakter, damit mehr Platz für den Inhalt bleibt. */
 @media(max-width:360px){
+  #desktopMate{
+    left:clamp(96px, 28vw, 118px);
+    width:132px;
+  }
   .controls{
-    left:4px;
-    max-width:108px;
+    left:3px;
+    width:clamp(86px, 24vw, 104px);
+    max-width:104px;
     padding:4px;
     border-radius:10px;
     gap:2px;
@@ -781,8 +788,9 @@ body.ui-collapsed .demo{
   const bottomBanner = document.getElementById("desktopMateBanner");
   function positionControlsAboveBanner(){
     if(!controls) return;
-    // Die Zustandsauswahl bleibt dauerhaft links und untereinander.
-    controls.style.left = window.innerWidth <= 430 ? "6px" : "12px";
+    // Die Zustandsauswahl bleibt links in einer eigenen Spalte,
+    // damit sie auf kleinen Google-Sites-Containern nicht über dem PNG liegt.
+    controls.style.left = "";
     controls.style.top = "50%";
     controls.style.bottom = "auto";
     controls.style.transform = "translateY(-50%)";
