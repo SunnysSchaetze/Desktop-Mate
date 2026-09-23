@@ -1262,6 +1262,69 @@ body.ui-collapsed #uiCollapse{
   }
 }
 
+
+/* =========================================================
+   EINHEITLICHES LAYOUT: Desktop genauso wie Smartphone
+   Auswahl links | Status mittig/rechts | Button rechts
+   Alles direkt oberhalb des PNG-Banners
+   ========================================================= */
+#bannerTop{
+  position:static !important;
+  width:100% !important;
+  max-width:100% !important;
+  min-height:0 !important;
+  margin:0 0 4px 0 !important;
+  padding:0 !important;
+  display:grid !important;
+  grid-template-columns:auto minmax(0,1fr) auto !important;
+  grid-template-rows:auto !important;
+  align-items:start !important;
+  justify-content:normal !important;
+  gap:6px !important;
+  transform:none !important;
+}
+
+#bannerTop .controls{
+  grid-column:1 !important;
+  grid-row:1 !important;
+  justify-self:start !important;
+  align-self:start !important;
+  margin:0 !important;
+}
+
+#bannerStateName{
+  grid-column:2 !important;
+  grid-row:1 !important;
+  justify-self:end !important;
+  align-self:start !important;
+  margin:0 !important;
+}
+
+#uiCollapse{
+  grid-column:3 !important;
+  grid-row:1 !important;
+  justify-self:end !important;
+  align-self:start !important;
+  margin:0 !important;
+}
+
+#desktopMateBanner{
+  display:block !important;
+  width:100% !important;
+  height:auto !important;
+  margin:0 !important;
+}
+
+/* Nur Größen werden für kleinere Displays angepasst –
+   die Anordnung bleibt identisch. */
+@media(max-width:700px){
+  #bannerWrap{
+    width:94vw !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+  }
+}
+
 </style>
 </head>
 <body>
