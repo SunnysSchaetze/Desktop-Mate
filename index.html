@@ -573,6 +573,52 @@ body.ui-collapsed .demo{
   background:#000;
   box-shadow:0 0 12px rgba(255,127,0,.45);
 }
+
+
+/* MOBILE FIX: komplette Zustandsliste erreichbar */
+@media(max-width:430px){
+  .controls{
+    left:5px !important;
+    right:auto !important;
+    top:10px !important;
+    bottom:10px !important;
+    transform:none !important;
+    max-width:125px;
+    max-height:calc(100svh - 20px);
+    overflow-y:auto !important;
+    overflow-x:hidden;
+    justify-content:flex-start !important;
+    align-items:stretch;
+    gap:3px;
+    padding:5px;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    touch-action:pan-y;
+  }
+  .controls button{
+    flex:0 0 auto;
+    width:100%;
+    min-width:0;
+  }
+}
+@media(max-width:360px){
+  .controls{
+    left:3px !important;
+    top:8px !important;
+    bottom:8px !important;
+    max-width:108px;
+    max-height:calc(100svh - 16px);
+    padding:4px;
+    gap:2px;
+  }
+  .controls button{
+    flex:0 0 auto;
+    width:100%;
+    padding:3px 4px;
+    font-size:7px;
+    line-height:1.1;
+  }
+}
 </style>
 </head>
 <body>
@@ -848,9 +894,10 @@ body.ui-collapsed .demo{
   const bottomBanner = document.getElementById("desktopMateBanner");
   function positionControlsAboveBanner(){
     if(!controls) return;
-    // Keine Inline-Position setzen: Die responsive CSS-Regel soll auf
-    // Smartphones die Größe und Position bestimmen.
+    // Auf Smartphones übernimmt CSS die Positionierung und das Scrollen.
+    // Keine Inline-Position setzen, die die Mobile-Regeln überschreibt.
     controls.style.left = "";
+    controls.style.right = "";
     controls.style.top = "";
     controls.style.bottom = "";
     controls.style.transform = "";
