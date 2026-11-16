@@ -1326,42 +1326,36 @@ body.ui-collapsed #uiCollapse{
 }
 
 
-/* PNG-Grafiken auf kleineren Bildschirmen ca. 20 % kleiner.
-   Animationen und das bestehende Layout bleiben erhalten. */
+/* Smartphone / Facebook-In-App-Browser:
+   Nur die drei dekorativen PNGs auf 30 % der ursprünglichen
+   Mobilgröße setzen (also 70 % kleiner).
+   Der Drache, die Auswahlleiste und die Buttons bleiben unverändert. */
 @media (max-width: 700px) {
-  /* Logo oben rechts */
+  /* PNG oben rechts: ursprünglich 175px / max. 38vw */
   #siteLogo {
-    width: 140px;
-    max-width: 30.4vw;
+    width: 52.5px !important;
+    max-width: 11.4vw !important;
+    height: auto !important;
   }
 
-  /* Website-/Desktop-Mate-Badge oben links */
+  /* PNG oben links: ursprünglich 210px / max. 48vw */
   #desktopMateBadge {
-    width: 168px;
-    max-width: 38.4vw;
+    width: 63px !important;
+    max-width: 14.4vw !important;
+    height: auto !important;
   }
 
-  /* Unteres Banner: Der Wrapper skaliert das PNG mit. */
+  /* Nur das untere PNG verkleinern, nicht seine Bedienelemente.
+     Der Banner-Container bleibt in voller Breite erhalten. */
   #bannerWrap {
-    width: 75.2vw !important;
+    width: 94vw !important;
   }
-
-  /* Drache: Container mitskalieren statt transform: scale(),
-     damit seine vorhandenen Bewegungsanimationen funktionieren. */
-  #desktopMate {
-    width: clamp(116px, 27.2vw, 164px) !important;
-  }
-  #desktopMate .mate-img {
-    width: 100%;
-    height: auto;
-  }
-}
-
-/* Die bisherige feste Drachenbreite für sehr kleine Handys
-   ebenfalls auf 80 % reduzieren (145 px -> 116 px). */
-@media (max-width: 430px) {
-  #desktopMate {
-    width: 116px !important;
+  #desktopMateBanner {
+    width: 30% !important;
+    max-width: 30% !important;
+    height: auto !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 }
 </style>
