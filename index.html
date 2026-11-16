@@ -1327,21 +1327,21 @@ body.ui-collapsed #uiCollapse{
 
 
 /* Smartphone / Facebook-In-App-Browser:
-   Nur die drei dekorativen PNGs auf 50 % der ursprünglichen
-   Mobilgröße setzen (also 50 % kleiner).
+   Nur die drei dekorativen PNGs auf 75 % der ursprünglichen
+   Mobilgröße setzen (also 25 % kleiner).
    Der Drache, die Auswahlleiste und die Buttons bleiben unverändert. */
 @media (max-width: 700px) {
   /* PNG oben rechts: ursprünglich 175px / max. 38vw */
   #siteLogo {
-    width: 87.5px !important;
-    max-width: 19vw !important;
+    width: 131.25px !important;
+    max-width: 28.5vw !important;
     height: auto !important;
   }
 
   /* PNG oben links: ursprünglich 210px / max. 48vw */
   #desktopMateBadge {
-    width: 105px !important;
-    max-width: 24vw !important;
+    width: 157.5px !important;
+    max-width: 36vw !important;
     height: auto !important;
   }
 
@@ -1351,8 +1351,8 @@ body.ui-collapsed #uiCollapse{
     width: 94vw !important;
   }
   #desktopMateBanner {
-    width: 50% !important;
-    max-width: 50% !important;
+    width: 75% !important;
+    max-width: 75% !important;
     height: auto !important;
     margin-left: auto !important;
     margin-right: auto !important;
@@ -1362,18 +1362,18 @@ body.ui-collapsed #uiCollapse{
 /* Google Sites / Facebook: mobile Endgeräte unabhängig von iframe-Breite erkennen.
    Im iframe kann die CSS-Viewport-Breite größer sein als der echte Smartphone-Screen. */
 body.mobile-embed #siteLogo {
-  width: 87.5px !important;
-  max-width: calc(var(--real-mobile-width, 390px) * 0.19) !important;
+  width: 131.25px !important;
+  max-width: calc(var(--real-mobile-width, 390px) * 0.285) !important;
   height: auto !important;
 }
 body.mobile-embed #desktopMateBadge {
-  width: 105px !important;
-  max-width: calc(var(--real-mobile-width, 390px) * 0.24) !important;
+  width: 157.5px !important;
+  max-width: calc(var(--real-mobile-width, 390px) * 0.36) !important;
   height: auto !important;
 }
 body.mobile-embed #desktopMateBanner {
-  width: min(50%, calc(var(--real-mobile-width, 390px) * 0.47)) !important;
-  max-width: min(50%, calc(var(--real-mobile-width, 390px) * 0.47)) !important;
+  width: min(75%, calc(var(--real-mobile-width, 390px) * 0.705)) !important;
+  max-width: min(75%, calc(var(--real-mobile-width, 390px) * 0.705)) !important;
   height: auto !important;
   margin-left: auto !important;
   margin-right: auto !important;
