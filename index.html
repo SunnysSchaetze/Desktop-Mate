@@ -1325,6 +1325,45 @@ body.ui-collapsed #uiCollapse{
   }
 }
 
+
+/* PNG-Grafiken auf kleineren Bildschirmen ca. 20 % kleiner.
+   Animationen und das bestehende Layout bleiben erhalten. */
+@media (max-width: 700px) {
+  /* Logo oben rechts */
+  #siteLogo {
+    width: 140px;
+    max-width: 30.4vw;
+  }
+
+  /* Website-/Desktop-Mate-Badge oben links */
+  #desktopMateBadge {
+    width: 168px;
+    max-width: 38.4vw;
+  }
+
+  /* Unteres Banner: Der Wrapper skaliert das PNG mit. */
+  #bannerWrap {
+    width: 75.2vw !important;
+  }
+
+  /* Drache: Container mitskalieren statt transform: scale(),
+     damit seine vorhandenen Bewegungsanimationen funktionieren. */
+  #desktopMate {
+    width: clamp(116px, 27.2vw, 164px) !important;
+  }
+  #desktopMate .mate-img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+/* Die bisherige feste Drachenbreite für sehr kleine Handys
+   ebenfalls auf 80 % reduzieren (145 px -> 116 px). */
+@media (max-width: 430px) {
+  #desktopMate {
+    width: 116px !important;
+  }
+}
 </style>
 </head>
 <body>
